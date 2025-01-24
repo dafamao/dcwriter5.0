@@ -58,7 +58,8 @@
         <span class="iconfont icon-qq"></span>
       </div>
 
-      <div class="dc_header_right_Item" title="github">
+      <div class="dc_header_right_Item" title="github" onclick="  
+          window.open('https://github.com/dafamao/dcwriter5.0')">
         <span class="iconfont icon-github"></span>
       </div>
 

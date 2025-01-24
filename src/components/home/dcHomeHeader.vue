@@ -182,7 +182,8 @@
 
       <div
         class="dc_header_right_Item dc_header_right_Item_github"
-        title="github"
+        title="github" onclick="  
+          window.open('https://github.com/dafamao/dcwriter5.0')"
       >
         <svg
           t="1735200858657"
