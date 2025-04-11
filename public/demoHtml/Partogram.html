@@ -1,0 +1,1074 @@
+<!--
+ * @Author: lxy x13141668665@163.com
+ * @Date: 2024-11-26 10:04:46
+ * @LastEditors: lxy x13141668665@163.com
+ * @LastEditTime: 2024-12-18 09:49:57
+ * @FilePath: \wwwroot\testDelivery.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html,
+        .dc-writer-container {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .dc-writer-container {}
+
+        .button-container {
+            width: 100%;
+            height: 100px;
+
+        }
+
+        #myWriterControl {
+            width: 100%;
+            height: calc(100% - 120px);
+            overflow: hidden;
+        }
+        .toolBox {
+         /* height: 40px; */
+         width: 100%;
+         border: 1px solid #dcdfe6;
+         display: flex;
+         font-size: 13px;
+         overflow-x: auto;
+         overflow-y: hidden;
+      }
+
+      .toolBox span {
+         display: inline-table;
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 5px 10px;
+         min-width: 50px;
+         height: 18px;
+         white-space: nowrap
+      }
+
+      .toolBox select {
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 3px 10px;
+         min-width: 50px;
+         height: 29px;
+      }
+
+      #FontNameSelect {
+         min-width: 150px
+      }
+
+      .toolBox span:has(select) {
+         padding: 0px;
+         /* margin: 0px; */
+      }
+
+      .toolBox span:hover {
+         border: 1px solid #4e6ef2;
+         cursor: pointer;
+      }
+    </style>
+</head>
+
+<body>
+
+    <div class="dc-writer-container">
+        <div class="toolBox">
+            <span onclick="SetFlowYAxisValues()">设置Y轴折线图的值</span>
+            <span onclick="SetFlowYAxisValuesByName()">设置宫口的Y轴折线图的值</span>
+            <span onclick="SetFlowAttachedTableDataValues()">设置表格数据值</span>
+        </div>
+        <div class="toolBox">
+            <span onclick="setFlowLabelByName()">设置文本标签胎儿娩出标记的文本值</span>
+            <span onclick="setFlowHeaderLabelByName()">设置页眉标签属性</span>
+            <span onclick="setFlowYAxisHeaderLabelByName()">设置Y轴折线图的页眉标签属性</span>
+            <span onclick="setFlowAttchedTableHeaderLabelByName()">设置表格的页眉标签属性</span>
+            <span onclick="ResetFlowValues()">重置所有值</span>
+            <br />
+            <span onclick="SaveFlowDocumentToPDF()">下载为本地pdf文件</span>
+        </div>
+        <div id='myWriterControl' dctype='DCFlowControlForWASM'
+            style="height: calc(100% - 80px); width:100%; border: 1px solid #ccc;overflow: auto;">
+        </div>
+    </div>
+    <base href='/' target='_blank'>
+    <script src="https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js"></script>
+
+    <!-- <base href='/' target='_blank'>
+    <script src="_framework/dcwriter5.js"></script> -->
+    <script>
+
+        var flowValues = {
+            gongkou: [{
+                Time: "2024-12-01 04:01:01",
+                Value: 3.1
+            }, {
+                Time: "2024-12-01 05:00:00",
+                Value: 4
+            }, {
+                Time: "2024-12-01 06:32:30",
+                Value: 6
+            }, {
+                Time: "2024-12-01 07:45:00",
+                Value: 9,
+                
+            }],
+            taitou: [{
+                Time: "2024-12-01 02:00:00",
+                Value: -4
+            }, {
+                Time: "2024-12-01 04:30:00",
+                Value: -3
+            }, {
+                Time: "2024-12-01 07:32:30",
+                Value: 0
+            }, {
+                Time: "2024-12-01 08:40:00",
+                Value: 1,
+                IsEndValue: true
+            }],
+            AttachedTableData: [{
+                "Time": "2024-12-01 08:42:00",
+                "jianchashijian": "08:42",
+                "xueya": [120, 60],
+                "taixin": "阿凡达",
+                "gongsuo": null,
+                "yichangqingkuang": "100",
+                "chulijilu": "100",
+                "qianming": "100",
+            }, {
+                "Time": "2024-12-01 06:40:00",
+                "jianchashijian": "6:40",
+                "xueya": null,
+                "taixin": "100",
+                "gongsuo": null,
+                "yichangqingkuang": "100",
+                "chulijilu": "100",
+                "qianming": "100",
+            }, {
+                "Time": "2024-12-01 04:40:00",
+                "jianchashijian": "4:40",
+                "xueya": null,
+                "taixin": "100",
+                "gongsuo": null,
+                "yichangqingkuang": "100",
+                "chulijilu": "100",
+                "qianming": "100",
+            }, {
+                "Time": "2024-12-01 10:40:00",
+                "jianchashijian": "10:40",
+                "xueya": null,
+                "taixin": "100",
+                "gongsuo": null,
+                "yichangqingkuang": "100",
+                "chulijilu": "100",
+                "qianming": "100",
+            },
+            ]
+
+        };
+
+
+        var gongkouValues = {
+            Time: "2024-12-01 12:40:00",
+            Value: 6,
+            IsEndValue: true
+        };
+
+
+
+
+    </script>
+    <script>
+        let rootElement = document.getElementById('myWriterControl');
+        CreateFlowControlForWASM(rootElement);
+
+        // 初始化事件
+        rootElement.EventFlowControlInit = function (a, b, c) {
+            rootElement.LoadFlowDocumentFromJson(dataJson);// 加载数据
+        };
+
+        // 设置值
+        function SetFlowYAxisValues() {
+
+            var flowValues2 = {
+                gongkou: [{
+                    Time: "2024-12-01 00:00:01",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 02:30:00",
+                    Value: 3.5
+                }, {
+                    Time: "2024-12-01 03:32:30",
+                    Value: 3.5
+                }, {
+                    Time: "2024-12-01 05:40:00",
+                    Value: 6
+                }],
+                taitou: [{
+                    Time: "2024-12-01 00:01:01",
+                    Value: -4
+                }, {
+                    Time: "2024-12-01 01:30:00",
+                    Value: -3
+                }, {
+                    Time: "2024-12-01 02:32:30",
+                    Value: 0
+                }, {
+                    Time: "2024-12-01 03:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 04:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 05:40:00",
+                    Value: 1
+                }, {
+                    Time: "2024-12-01 06:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 07:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 08:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 09:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 10:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 11:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 12:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 13:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 14:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 15:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 16:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 17:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 18:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 19:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 20:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 21:40:00",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 22:40:00",
+                    Value: 3.5
+                }, {
+                    Time: "2024-12-01 13:40:00",
+                    Value: 4,
+                    IsEndValue: true
+                }],
+
+
+            };
+
+            rootElement.SetFlowYAxisValues(flowValues2);
+        }
+        // 设置值
+        function SetFlowYAxisValuesByName() {
+            // var gongkouValues = {
+            //     Time: "2024-12-01 12:40:00",
+            //     Value: 6,
+            //     IsEndValue: true
+            // };
+
+            var gongkouValues = [
+                {
+                    Time: "2024-12-01 03:40:01",
+                    Value: 2,
+
+                }, {
+                    Time: "2024-12-01 04:30:00",
+                    Value: 2.4
+                }, {
+                    Time: "2024-12-01 06:32:30",
+                    Value: 3
+                }, {
+                    Time: "2024-12-01 07:40:00",
+                    Value: 4
+                },
+            ];
+            rootElement.SetFlowYAxisValuesByName("gongkou", gongkouValues);
+        }
+        //设置表格数据
+        function SetFlowAttachedTableDataValues() {
+            var attachedTableDataValues = {
+                "Time": "2024-12-01 10:40:00",
+                "jianchashijian": "00:01",
+                "xueya": [120, 60],
+                "taixin": "145",
+                "gongsuo": [45, '分'],
+                "yichangqingkuang": "一条数据",
+                "chulijilu": '处理一次',
+                "qianming": '李四'
+            };
+            // var attachedTableDataValues = [{
+            //     "Time": "2024-12-01 00:01:02",
+            //     "jianchashijian": "2024-12-01 00:01:00",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 00:01:05",
+            //     "jianchashijian": "0",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 00:01:00",
+            //     "jianchashijian": "111",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 00:01:00",
+            //     "jianchashijian": "00:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 01:01:00",
+            //     "jianchashijian": "01:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 02:01:00",
+            //     "jianchashijian": "02:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 03:01:00",
+            //     "jianchashijian": "03:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 04:01:00",
+            //     "jianchashijian": "04:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 05:01:00",
+            //     "jianchashijian": "05:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 06:01:00",
+            //     "jianchashijian": "06:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 07:01:00",
+            //     "jianchashijian": "07:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 08:01:00",
+            //     "jianchashijian": "08:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 09:01:00",
+            //     "jianchashijian": "09:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 10:01:00",
+            //     "jianchashijian": "10:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 11:01:00",
+            //     "jianchashijian": "11:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 12:01:00",
+            //     "jianchashijian": "12:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 13:01:00",
+            //     "jianchashijian": "13:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 14:01:00",
+            //     "jianchashijian": "14:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 15:01:00",
+            //     "jianchashijian": "15:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 16:01:00",
+            //     "jianchashijian": "16:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 17:01:00",
+            //     "jianchashijian": "17:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 18:01:00",
+            //     "jianchashijian": "18:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 19:01:00",
+            //     "jianchashijian": "19:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 20:01:00",
+            //     "jianchashijian": "20:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 21:01:00",
+            //     "jianchashijian": "21:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 22:01:00",
+            //     "jianchashijian": "22:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 23:01:00",
+            //     "jianchashijian": "23:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }, {
+            //     "Time": "2024-12-01 24:01:00",
+            //     "jianchashijian": "24:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // },
+            // {
+            //     "Time": "2024-12-02 00:01:00",
+            //     "jianchashijian": "00:01",
+            //     "xueya": [120, 60],
+            //     "taixin": "145",
+            //     "gongsuo": [45, '分'],
+            //     "yichangqingkuang": "异常1异常2异常3",
+            //     "chulijilu": '处理一次',
+            //     "qianming": '张三丰'
+            // }
+            // ];
+            rootElement.SetFlowAttachedTableDataValues(attachedTableDataValues);
+        }
+
+
+        // 设置标签
+        function setFlowLabelByName() {
+            rootElement.setFlowLabelByName('mianchu', {
+                "Left": 710,
+                "Top": 610,
+                "Width": 20,
+                "Height": 160,
+                 "Text": "胎儿娩出标记222",
+                // "MultiLine": true,
+                "ShowBorder": true,
+                // "name": "mianchu",
+                "ColorValue": "green",
+                // "TextAlign": "right",
+                // "VerticalAlign": "top",
+                // "FontName": "宋体",
+                // "FontSize": 14,
+                // "FontBold": false,
+                // "FontItalic": false,
+                // "FontUnderline": false,
+                // "SymbolVisible": true,
+                // "SymbolStyle": "circlecenterx",
+                // "SymbolColorValue": "#ff1515,#1b6ae7",
+                // "SymbolSize": 5
+            });
+        }
+
+        // 设置页眉标签属性
+        function setFlowHeaderLabelByName() {
+
+            rootElement.setFlowHeaderLabelByName('yuchanqi', {
+                Title: "标题标题标题",
+                Value: "2024-01-05",//值
+                SeperatorChar: "--",//分隔符
+            });
+        }
+
+        // 设置Y轴区域中页眉标签属性
+        function setFlowYAxisHeaderLabelByName() {
+
+            rootElement.setFlowYAxisHeaderLabelByName('xingming', {
+                Title: "标题标题标题",
+                Value: "2024-01-05",//值
+                SeperatorChar: "--",//分隔符
+            });
+        }
+
+        // 设置Y轴区域中页眉标签属性
+        function setFlowAttchedTableHeaderLabelByName() {
+
+            rootElement.setFlowAttchedTableHeaderLabelByName('guilvgongsuo', {
+                Title: "标题标题标题",
+                Value: "2024-01-05",//值
+                SeperatorChar: "--",//分隔符
+            });
+        }
+
+        //下载pdf
+        function SaveFlowDocumentToPDF() {
+            rootElement.SaveFlowDocumentToPDF(function (data) {
+                console.log(data);
+                downloadPDF(data);
+            });
+        }
+        function downloadPDF(base64) {
+            const link = document.createElement('a');
+            link.href = base64;
+            link.download = 'downloaded.pdf';
+            link.click();
+            link.remove();
+        }
+        // 重置值
+        function ResetFlowValues() {
+            rootElement.ResetFlowValues();
+        }
+
+        var dataJson = {
+            "Config": {
+                "ViewMode": "Page",
+                "PageIndex": 0,
+                "TotalPageNumber": 1,
+                "BigTitleMarinTop": 60,//大标题距离顶部的高度
+                "HeaderLabelsMarginTop": 20,//页面标题距离大标题的距离
+                "BigTitle": "某某医院产程图",
+                "BigTitleFontSize": 27,
+                "BigTitleFontName": "",
+                "BigTitleFontBold": false,
+                "FontName": "宋体",
+                "FontSize": 12,
+                "PageIndexText": "第[%pageindex%]页",
+                "GridLineColorValue": "#E0E0E0",
+                "FooterDescription": "",
+                "YAxisMarginTop": 2,
+                "AttachedTableMarginTop": 30,
+                "LineWidth": 1,
+                "StartingTime": "2024-12-01 00:00:00",
+                "PageSettings": {
+                    "PaperSizeName": "A4",
+                    "PaperHeight": 1122,
+                    "PaperWidth": 800,
+                    "Landscape": false,
+                    "TopMargin": 20,
+                    "BottomMargin": 40,
+                    "LeftMargin": 36,
+                    "RightMargin": 36,
+                    "Unit": "px"
+                },
+                "HeaderLabels": [
+                    {
+                        Name: "yuchanqi",
+                        Title: "预产期",//标题
+                        Value: "2024-12-01",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    },
+                    {
+                        Title: "床号",//标题
+                        Value: "1101",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }
+                ],
+                "YAxis": {
+                    "YAxisCoincidentPointSymbolStyle": "circlecenterx",//Y轴重合点符号样式
+                    "YAxisCoincidentPointSymbolSize": 5, //Y轴重合点符号大小
+                    "YAxisCoincidentPointSymbolColorValue": "#ff1515,#1b6ae7", //Y轴重合点符号颜色值
+
+                    "SplitXAxisNumber": 24,//X轴分割数，将24小时分成几份
+                    "XAxisLineColorValue": "#909399",//X轴线颜色值
+                    "XAxisLineWidth": 1,//X轴线宽度
+                    "SplitYAxisNumber": 10,//Y格子数量
+                    "YAxisLineColorValue": "#909399",//Y轴线颜色值
+                    "YAxisLineWidth": 1,//Y轴线宽度
+                    "ShowXAxis": true,//是否展示底部X轴的数值
+                    "SplitXAxisNumberArray": [],//底部数值
+                    "XAxisForHeaderLableBottomMargin": 12,//X轴表头距离底部的距离
+                    "XAxisForHeaderLableList": [{//X轴表头数据
+                        Title: "姓名",//标题
+                        Name: "xingming",
+                        Value: "阿阿斯顿阿",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }, {
+                        Title: "年龄",//标题
+                        Value: "30",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }, {
+                        Title: "孕产次",//标题
+                        Value: "1",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }, {
+                        Title: "日期",//标题
+                        Value: "2024-12-01",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }],
+                    "LeftYAxis": [
+                        {
+                            AllowOutofRange: false,  //同意超出范围  
+                            MaxValue: 10,           //最大值              
+                            MinValue: 0,             //最小值        
+                            Name: "gongkou",                //名称          
+                            Style: "Value",          //样式          
+                            Title: "宫口", //标题    
+                            YSplitFontSize: 12,
+                            YSplitNum: 10,          //纵向分割数  
+                            MinValueVisible: false,//是否展示最小值
+                            TitleColorValue: null,   //标题颜色      
+                            TitleVisible: false,      //标题可见      
+                            ShowLegendInRule: true,  //在标尺中显示图例     
+                            RedLineValue: 5,      //红线数值      
+                            HollowCovertTargetName: null, //空心覆盖目标  
+                            AllowInterrupt: true,//允许断线      
+                            LanternValueColorForUpValue: "#0000FF", //显示超出上限值的颜色 
+                            LanternValueColorForDownValue: "#FF0000", //显示低于下限值的颜色 
+                            TopPadding: 10,//网格线顶端空白边距比例  //适配
+                            BottomPadding: 10,//网格线底端空白边距比例  //适配
+                            SpecifyTitleWidth: 28, //指定宽度      
+                            LineColor: "#ff1515",//线颜色值
+                            LineWidth: 1,//线宽度
+                            AlertLineColorValue: "#FF0000",//警戒线颜色值
+                            ShowPointValue: false,   //显示数值点的值
+                            Visible: true,           //可见          
+                            BorderVisible: false,     //侧边框是否可见
+                            TitleAlign: "right",        //标题对齐方式"left""center""right"  
+                            SymbolVisible: false, //是否显示点
+                            SymbolStyle: "circle", //点样式
+                            SymbolColorValue: "#ff1515", //点颜色
+                            SymbolSize: 4, //点大小
+
+                            EndSymbolStyle: "concentricdots", //结束点样式
+                            EndSymbolColorValue: "#ff1515,#1b6ae7", //结束点颜色
+                            EndSymbolSize: 4, //结束点大小
+
+                        }],
+                    "RightYAxis": [{
+                        MaxValue: 5,           //最大值              
+                        MinValue: -5,             //最小值        
+                        Name: "taitou",                //名称          
+                        Style: "Value",          //样式          
+                        Title: "胎头",               //标题          
+                        YSplitNum: 10,          //纵向分割数    
+                        TitleColorValue: null,   //标题颜色      
+                        TitleVisible: false,      //标题可见      
+                        ShowLegendInRule: true,  //在标尺中显示图例     
+                        RedLineValue: null,      //红线数值      
+                        HollowCovertTargetName: null, //空心覆盖目标  
+                        AllowInterrupt: true,//允许断线      
+                        LanternValueColorForUpValue: "#0000FF", //显示超出上限值的颜色 
+                        LanternValueColorForDownValue: "#FF0000", //显示低于下限值的颜色 
+                        SpecifyTitleWidth: 30, //指定宽度      
+                        AlertLineColorValue: "#FF0000",//警戒线颜色值
+                        ShowPointValue: false,   //显示数值点的值
+                        Visible: true,           //可见          
+                        BorderVisible: false,     //侧边框是否可见
+                        TitleAlign: "left",        //标题对齐方式"left""center""right"  
+                        LineColor: "#1b6ae7",//线颜色值
+                        LineWidth: 1,//线宽度
+                        SymbolVisible: false, //是否显示点
+                        SymbolStyle: "cross", //点样式
+                        SymbolColorValue: "#1b6ae7", //点颜色
+                        SymbolSize: 4, //点大小
+                        EndSymbolStyle: "concentricdots", //结束点样式
+                        EndSymbolColorValue: "#1b6ae7,#ff1515", //结束点颜色
+                        EndSymbolSize: 4, //结束点大小
+                    }],
+                    WarningLineOptions: {//警戒线配置
+                        Visible: true,//是否显示警戒线
+                        TargetYAxisName: "gongkou",//警戒线目标Y轴名称
+                        TargetYAxisValue: 3,//警戒线目标Y轴值
+                        WarningLineExtremePointVisible: true,//是否显示警戒线两端圆点
+                        WarningLineExtremePointColorValue: "blue",//警戒线两端圆点颜色值
+                        LineColorValue: "grey",//警戒线颜色值
+                        LineWidth: 1,//警戒线宽度
+                        LinePanLeftOffset: 1, //警戒线向左平移量(以小时为单位)
+                        WarningLineConnectedToTopOffset: 4, //警戒线偏移几个小时连接到顶部
+                        IsLineConnectedToBottom: true, //警戒线是否连接到底部
+
+                        ProcessingLineOffsetX: 4,//处理线，基于警戒线的X轴平移量
+                        ProcessingLineExtremePointVisible: true,//是否显示处理线两端圆点
+                        ProcessingLineExtremePointColorValue: "green",//处理线两端圆点颜色值
+                    }
+                },
+                "AttachedTable": {
+                    "TableCellBorderCorlorValue": "#909399",
+                    "TableCellBorderWidth": 1,
+                    "TableHeaderCellBorderCorlorValue": "#303133",
+                    "TableHeaderCellBorderWidth": 1,
+                    "AttachedTableHeaderLabelHeight": 20,
+                    "AttachedTableHeaderLabels": [{
+                        Name: "guilvgongsuo",
+                        Title: "规律宫缩开始时间",//标题
+                        Value: "2024-12-01 00:00:00",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }, {
+                        Title: "产程小时",//标题
+                        Value: "24",//值
+                        FontSize: 12,//   字体大小
+                        FontName: "宋体",//字体名称
+                        FontBold: false,//是否加粗
+                        GroupIndex: 0,//分组索引
+                        SeperatorChar: ":",//分隔符
+                    }],
+                    "TableRowData": [
+                        {
+                            Name: "jianchashijian",//名称
+                            RowHeight: 40,//行高
+                            IsCellSegment: false,//是否单元格分段
+                            Label: "检查时间",//标签
+                            FontSize: 10,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式 (IsCellSegment=false时有效)
+                            TextColorValue: "#000000",//文字颜色 (IsCellSegment=false时有效)
+                            SingleLineVertical: false,//单行垂直展示 (IsCellSegment=false时有效)
+
+                        },
+                        {
+                            Name: "xueya",//名称
+                            RowHeight: 60,//行高
+                            IsCellSegment: true,//是否单元格分段
+                            Label: "血压",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: false,//单行垂直展示
+
+                        },
+                        {
+                            Name: "taixin",//名称
+                            RowHeight: 60,//行高
+                            IsCellSegment: false,//是否单元格分段
+                            Label: "胎心",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: false,//单行垂直展示
+
+                        },
+                        {
+                            Name: "gongsuo",//名称
+                            RowHeight: 60,//行高
+                            IsCellSegment: true,//是否单元格分段
+                            Label: "宫缩",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: false,//单行垂直展示
+
+                        },
+                        {
+                            Name: "yichangqingkuang",//名称
+                            RowHeight: 120,//行高
+                            IsCellSegment: false,//是否单元格分段
+                            Label: "异常情况",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: true,//单行垂直展示
+
+                        },
+                        {
+                            Name: "chulijilu",//名称
+                            RowHeight: 80,//行高
+                            IsCellSegment: false,//是否单元格分段
+                            Label: "处理记录",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: true,//单行垂直展示
+                        },
+                        {
+                            Name: "qianming",//名称
+                            RowHeight: 60,//行高
+                            IsCellSegment: false,//是否单元格分段
+                            Label: "签名",//标签
+                            FontSize: 12,//字体大小
+                            FontName: "宋体",//字体名称
+                            FontBold: false,//是否加粗
+                            TextAlign: "center",//对齐方式
+                            VerticalAlign: "middle",//垂直对齐方式
+                            TextColorValue: "#000000",//文字颜色
+                            SingleLineVertical: true,//单行垂直展示
+                        }
+                    ]
+                },
+                "Labels": [
+                    {
+                        "Left": 710,
+                        "Top": 610,
+                        "Width": 20,
+                        "Height": 160,
+                        "Name": "mianchu",
+                        "Text": "胎儿娩出标记",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": null,
+                        "ColorValue": "#ff1515",
+                        "TextAlign": "right",
+                        "VerticalAlign": "top",
+                        "FontName": "宋体",
+                        "FontSize": 14,
+                        "FontBold": false,
+                        "FontItalic": false,
+                        "FontUnderline": false,
+                        "SymbolVisible": true,
+                        "SymbolStyle": "circlecenterx",
+                        "SymbolColorValue": "#ff1515,#1b6ae7",//第二个颜色表示从外到内依次的颜色值
+                        "SymbolSize": 5,
+
+                    },
+                    {
+                        "Left": 710,
+                        "Top": 240,
+                        "Width": 20,
+                        "Height": 100,
+                        "Text": "胎头下降",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": null,
+                        "ColorValue": "#1b6ae7",
+                        "TextAlign": "right",
+                        "VerticalAlign": "top",
+                        "FontName": "宋体",
+                        "FontSize": 14,
+                        "FontBold": false,
+                        "FontItalic": false,
+                        "FontUnderline": false,
+                        "SymbolVisible": true,
+                        "SymbolStyle": "cross",
+                        "SymbolColorValue": "#1b6ae7,",
+                        "SymbolSize": 4,
+                    },
+                    {
+                        "Left": 0,
+                        "Top": 240,
+                        "Width": 20,
+                        "Height": 120,
+                        "Text": "宫口开大厘米",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": null,
+                        "ColorValue": "#ff1515",
+                        "TextAlign": "left",
+                        "VerticalAlign": "top",
+                        "FontName": "宋体",
+                        "FontSize": 14,
+                        "FontBold": false,
+                        "FontItalic": false,
+                        "FontUnderline": false,
+                        "SymbolVisible": true,
+                        "SymbolStyle": "circle",
+                        "SymbolColorValue": "#ff1515",
+                        "SymbolSize": 5,
+                    },
+
+                ]
+            },
+            "Values": flowValues
+        }
+
+    </script>
+</body>
+
+</html>

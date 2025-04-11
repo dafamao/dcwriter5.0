@@ -1,0 +1,1492 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .toolBox {
+         /* height: 40px; */
+         width: 100%;
+         border: 1px solid #dcdfe6;
+         display: flex;
+         font-size: 13px;
+         overflow-x: auto;
+         overflow-y: hidden;
+      }
+
+      .toolBox span {
+         display: inline-table;
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 5px 10px;
+         min-width: 50px;
+         height: 18px;
+         white-space: nowrap
+      }
+
+      .toolBox select {
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 3px 10px;
+         min-width: 50px;
+         height: 29px;
+      }
+
+      #FontNameSelect {
+         min-width: 150px
+      }
+
+      .toolBox span:has(select) {
+         padding: 0px;
+         /* margin: 0px; */
+      }
+
+      .toolBox span:hover {
+         border: 1px solid #4e6ef2;
+         cursor: pointer;
+      }
+    </style>
+</head>
+
+<body>
+    <div style="width: 100%;height:100%;overflow: hidden;display:flex;flex-direction:column;">
+        <div class="toolBox">
+            <span onclick="file()">加载本地xml</span>
+            <span onclick="SaveTemperatureDocumentToFile('json')">下载json文件</span>
+            <span onclick="SaveTemperatureDocumentToFile('xml')">下载xml文件</span>
+            <span onclick="ShowDesignerDialog()">打开设计器</span>
+            </div>
+            <div class="toolBox">
+            <span onclick="shoushu()">记录手术</span>
+            <span onclick="draw2()">体温不升</span>
+            <span onclick="addyewen()">记录腋温</span>
+            <span onclick="addkouwen()">记录口温</span>
+            <span onclick="addgangwen()">记录肛温</span>
+            <span onclick="addmaibo()">记录脉搏</span>
+            <span onclick="addxinlv()">记录心率</span>
+            <span onclick="addtengtong()">记录疼痛评分</span>
+            </div>
+            <div class="toolBox">
+            <span onclick="addhuxi()">记录呼吸</span>
+            <span onclick="addxueya()">记录血压</span>
+            <span onclick="adddaxiaobian()">记录大小便</span>
+            <span onclick="addchuruliang()">记录出入量</span>
+            <span onclick="addshengaotizhong()">记录身高体重</span>
+        </div>
+        <div class="toolBox">
+            <span onclick="setzhuanke()">设置转科和转床信息</span>
+            <span onclick="SetHeaderLabelChangeDateByUID()">设置单个转科信息</span>
+            <span onclick="RemoveHeaderLabelChangeDateByUID()">删除单个转科信息</span>
+            <span onclick="RemoveHeaderLabelChangeDate()">删除所有转科信息</span>
+            <span onclick="setdaoguan()">设置特殊项目导管信息</span>
+        
+            <!-- <button onclick="SetHeaderLabelChangeDateByUID()">设置单个转科信息</button>
+            <button onclick="RemoveHeaderLabelChangeDateByUID()">删除单个转科信息</button>
+            <button onclick="RemoveHeaderLabelChangeDate()">删除所有转科信息</button> -->
+        </div>
+
+        <div style="background: #fff;flex: 1;overflow: hidden;">
+            <div id="myWriterControl" dctype="DCTemperatureControlForWASM"
+                 registercode="05C25FAE0C4827CF58FEB1CEF69C650B48804B3106C195A8A5DFCA49BEDC62F2E4E9463BA5390D4B316FABBD7C9E58CFD566CB2CB38318BC16E4162B9B419B1BC7185D37C28B81C25CD99D462DECCE0FE7C2F853741C8A1528E93598244F171220F65A3AB9C20AAC51"
+                 style="width: 100%;height:100%;">
+            </div>
+        </div>
+    </div>
+    <script src="http://117.89.85.111:8085/Jquery/jquery-1.7.2.min.js"></script>
+    <base href='/' target='_blank'>
+    <script src="https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js"></script>
+    <script>
+        // 静态JS文件加载完成后创建编辑器实例
+        var ctl = document.getElementById("myWriterControl");
+        CreateTemperatureControlForWASM(ctl);
+        ctl.EventTemperatureControlInit = function (rootElement) {
+            var loadResult = rootElement.LoadTemperatureDocumentFromString(JSON.stringify(jsonDataHasValue));
+        };
+
+        //导管
+        function setdaoguan() {
+
+        }
+
+
+
+
+        //腋温
+        function addyewen() {
+            var option = [
+                {
+                    "Time": "2016-03-20 02:00:00",
+                    "Value": 41,
+                    "SpecifySymbolStyle": "Cross"
+                },
+                {
+                    "Time": "2016-03-21 06:50:00",
+                    "Value": 37.5,
+                    "SpecifySymbolStyle": "Cross"
+                },
+                {
+                    "Time": "2016-03-21 13:22:00",
+                    "Value": 39.5,
+                    "SpecifySymbolStyle": "Cross",
+                    "LanternValue": (39.5 + 0.01), //灯笼值位置,加0.1是为了展示在上方
+                    "TextFontWeight": 900,
+                    "CharLantern": "v",//灯笼字符
+                    "CharLanternColor": "red", //灯笼颜色
+                    "LineStyleForLanternValue": 'None' //不展示灯笼线
+                },
+                {
+                    "Time": "2016-03-21 20:56:00",
+                    "Value": 38,
+                    "SpecifySymbolStyle": "Cross",//指定符号样式
+
+                },
+            ];
+            ctl.SetYAxisInfosValue("tiwen", option);
+
+        }
+        //口温
+        function addkouwen() {
+            var option = [
+
+                {
+                    "Time": "2016-03-22 08:22:00",
+                    "Value": 38,
+                    "SpecifySymbolStyle": "SolidCicle"
+                }, {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 36.5,
+                    "SpecifySymbolStyle": "SolidCicle"
+                },
+                {
+                    "Time": "2016-03-22 20:50:00",
+                    "Value": 37.5,
+                    "SpecifySymbolStyle": "SolidCicle",
+
+                }
+            ];
+            ctl.SetYAxisInfosValue("tiwen", option);
+
+        }
+        //肛温
+        function addgangwen() {
+            var option = [
+                {
+                    "Time": "2016-03-23 09:00:00",
+                    "Value": 37.5,
+                    "SpecifySymbolStyle": "HollowCicle"
+                },
+                {
+                    "Time": "2016-03-23 11:22:00",
+                    "Value": 36.5,
+                    "SpecifySymbolStyle": "HollowCicle"
+                },
+                {
+                    "Time": "2016-03-23 20:50:00",
+                    "Value": 38,
+                    "SpecifySymbolStyle": "HollowCicle",
+                },
+                {
+                    "Time": "2016-03-29 10:50:00",
+                    "Value": 36,
+                    "SpecifySymbolStyle": "HollowCicle",
+                    "LanternValue": 35, //灯笼值位置
+                    "TextFontWeight": 900,
+                    "CharLantern": "○",//灯笼字符
+                    "CharLanternColor": "red", //灯笼颜色
+                },
+                {
+                    "Time": "2016-03-29 20:50:00",
+                    "Value": 36,
+                    "SpecifySymbolStyle": "HollowCicle",
+                }
+            ];
+            ctl.SetYAxisInfosValue("tiwen", option);
+
+        }
+        //体温不升
+        function draw2() {
+            var option = {
+                "Value": 35,
+                "Time": "2016-03-24 09:50:00",
+            };
+            ctl.SetYAxisInfosValue("tiwen ", option);
+            var option = [
+                {
+                    "Value": 10,
+                    "Time": "2016-03-24 09:50:00",
+                    "Text": "不升",
+                    // "Text": "↓",
+                    "SpecifySymbolStyle": "HollowCicle"
+                }
+            ];
+            ctl.SetYAxisInfosValue("wenben", option);
+        }
+
+        //手术
+        function shoushu() {
+            var option = [
+                {
+                    "ColorValue": null,
+                    "EndTime": "0001-01-01 00:00:00",
+                    "LanternValue": null,
+                    "Link": null,
+                    "SpecifySymbolStyle": "Default",
+                    "Text": "上午八时手术",
+                    "TextAlign": "Center",
+                    "TextColorValue": null,
+                    "Time": "2016-03-20 08:00:00",
+                    "Title": null,
+                    "Value": -10000,
+                    "CharSymbol": "R",
+                    "CharLantern": "R",
+                    "TextFontSize": null,
+                    "TextFontName": null,
+                    "Verified": false,
+                    "Superscript": false,
+                    "LineStop": "Inherit",
+                    "ID": null,
+                    "ShowPointValue": "Inherit",
+                    "UpAndDown": "None"
+                },
+                {
+                    "ColorValue": null,
+                    "EndTime": "0001-01-01 00:00:00",
+                    "LanternValue": null,
+                    "Link": null,
+                    "SpecifySymbolStyle": "Default",
+                    "Text": "又做了手术",
+                    "TextAlign": "Center",
+                    "TextColorValue": null,
+                    "Time": "2016-03-21 08:00:00",
+                    "Title": null,
+                    "Value": -10000,
+                    "CharSymbol": "R",
+                    "CharLantern": "R",
+                    "TextFontSize": null,
+                    "TextFontName": null,
+                    "Verified": false,
+                    "Superscript": false,
+                    "LineStop": "Inherit",
+                    "ID": null,
+                    "ShowPointValue": "Inherit",
+                    "UpAndDown": "None"
+                },
+            ];
+            ctl.SetYAxisInfosValue("wenben", option);
+        }
+
+        //脉搏
+        function addmaibo() {
+            var option = [
+                {
+                    "Time": "2016-03-20 02:00:00",
+                    "Value": 160,
+                },
+                {
+                    "Time": "2016-03-20 18:22:00",
+                    "Value": 140,
+                }, {
+                    "Time": "2016-03-22 08:22:00",
+                    "Value": 100,
+                },
+                {
+                    "Time": "2016-03-21 11:22:00",
+                    "Value": 120,
+                },
+                {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 120,
+                },
+                {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 120,
+                },
+                {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 120,
+                },
+                {
+                    "Time": "2016-03-22 20:50:00",
+                    "Value": 109,
+                },
+                {
+                    "Time": "2016-03-23 09:00:00",
+                    "Value": 116,
+                },
+                {
+                    "Time": "2016-03-23 11:22:00",
+                    "Value": 120,
+                },
+                {
+                    "Time": "2016-03-23 20:50:00",
+                    "Value": 100,
+                },
+                {
+                    "Time": "2016-03-24 09:50:00",
+                    "Value": 120,
+                }
+            ];
+            ctl.SetYAxisInfosValue("maibo", option);
+        }
+
+        //心率
+        function addxinlv() {
+            var option = [
+
+                {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 170,
+                },
+                {
+                    "Time": "2016-03-22 20:50:00",
+                    "Value": 150,
+                },
+                {
+                    "Time": "2016-03-23 09:00:00",
+                    "Value": 156,
+                },
+                {
+                    "Time": "2016-03-23 11:22:00",
+                    "Value": 170,
+                },
+                {
+                    "Time": "2016-03-23 20:50:00",
+                    "Value": 150,
+                }
+            ];
+            ctl.SetYAxisInfosValue("xinlv", option);
+        }
+
+
+        //疼痛
+        function addtengtong() {
+            var option = [
+                {
+                    "Time": "2016-03-22 11:22:00",
+                    "Value": 2,
+                },
+                {
+                    "Time": "2016-03-22 20:50:00",
+                    "Value": 7,
+                },
+                {
+                    "Time": "2016-03-23 20:50:00",
+                    "Value": 6,
+                },
+                {
+                    "Time": "2016-03-24 20:50:00",
+                    "Value": 7,
+                    "LanternValue": 3, //灯笼值位置
+                    "fontSize": 10, //字体大小
+                    "TextFontWeight": 900, //字体粗细
+                    "CharLantern": "△",//灯笼字符
+                },
+                {
+                    "Time": "2016-03-25 20:50:00",
+                    "Value": 5,
+
+                },
+            ];
+            ctl.SetYAxisInfosValue("tengtong", option);
+
+        }
+
+        //呼吸
+        function addhuxi() {
+            var option = [
+                {
+                    "Time": "2016-03-22 04:00:00",
+                    "Value": 20,
+                },
+                {
+                    "Time": "2016-03-22 08:00:00",
+                    "Value": 15,
+                },
+                {
+                    "Time": "2016-03-22 12:00:00",
+                    "Value": "R",
+                },
+                {
+                    "Time": "2016-03-22 16:00:00",
+                    "Value": "R",
+                },
+                {
+                    "Time": "2016-03-22 20:00:00",
+                    "Value": "R",
+                },
+                {
+                    "Time": "2016-03-22 23:59:00",
+                    "Value": "R",
+                }];
+            ctl.SetSpecialItemsValue("huxi", option);
+        }
+        //血压
+        function addxueya() {
+            var option = [
+
+                {
+                    "Time": "2016-03-22 08:00:00",
+                    "Value": "135/78",
+                },
+                {
+                    "Time": "2016-03-22 15:00:00",
+                    "Value": "140/80",
+                },
+            ];
+            ctl.SetSpecialItemsValue("xueya", option);
+        }
+
+        //大小便
+        function adddaxiaobian() {
+            var option = [
+                {
+                    "Time": "2016-03-23 08:59:00",
+                    "Value": "☆",
+                },
+                {
+                    "Time": "2016-03-24 08:59:00",
+                    "Value": "*/E",
+                },
+                {
+                    "Time": "2016-03-25 08:59:00",
+                    "Value": 2,
+                },
+                {
+                    "Time": "2016-03-26 08:59:00",
+                    "Value": "1²/E",
+                }];
+            ctl.SetSpecialItemsValue("dabian", option);
+            var option = [
+                {
+                    "Time": "2016-03-23 10:59:00",
+                    "Value": "1500/C",
+                }, {
+                    "Time": "2016-03-27 10:59:00",
+                    "Value": "1500/C",
+                }, {
+                    "Time": "2016-03-31 10:59:00",
+                    "Value": "1500/C",
+                }, {
+                    "Time": "2016-04-06 10:59:00",
+                    "Value": "1500/C",
+                }, {
+                    "Time": "2016-04-20 10:59:00",
+                    "Value": "1500/C",
+                },];
+            ctl.SetSpecialItemsValue("xiaobian", option);
+        }
+
+        //出入量
+        function addchuruliang() {
+            var option = [
+                {
+                    "Time": "2016-03-23 08:59:00",
+                    "Value": 100,
+                }];
+            ctl.SetSpecialItemsValue("chuliang", option);
+            var option = [
+                {
+                    "Time": "2016-03-23 10:59:00",
+                    "Value": 200,
+                }];
+            ctl.SetSpecialItemsValue("ruliang", option);
+        }
+
+
+        //身高体重
+        function addshengaotizhong() {
+            var option = [
+                {
+                    "Time": "2016-03-23 08:59:00",
+                    "Value": 180,
+                }];
+            ctl.SetSpecialItemsValue("shengao", option);
+            var option = [
+                {
+                    "Time": "2016-03-23 10:59:00",
+                    "Value": 80,
+                }];
+            ctl.SetSpecialItemsValue("tizhong", option);
+        }
+
+        //设置转科信息
+        function setzhuanke() {
+            var HeaderLabelChangeDate = {   //小标题日期改变配置（用于实现转科记录）
+                "dcHeaderLabels_2": {
+                    "ValueConnectorSymbol": "→",
+                    "ValueChangeData": [
+                        {
+                            "Time": "2016-03-26 22:00:00",
+                            "Value": "皮肤科"
+                        }
+                    ]
+                },
+                "dcHeaderLabels_3": {
+                    "ValueConnectorSymbol": "→",
+                    "ValueChangeData": [
+                        {
+                            "Time": "2016-03-27 22:00:00",
+                            "Value": "456"
+                        }
+                    ]
+                }
+            };
+            ctl.SetHeaderLabelChangeDate(HeaderLabelChangeDate);
+        }
+        function SetHeaderLabelChangeDateByUID() {
+            var dcHeaderLabels_2 = {
+                "ValueConnectorSymbol": "→",
+                "ValueChangeData": [
+                    {
+                        "Time": "2016-03-29 22:00:00",
+                        "Value": "康复科"
+                    }]
+            };
+            ctl.SetHeaderLabelChangeDateByUID('dcHeaderLabels_2', dcHeaderLabels_2);
+        }
+
+        //删除转科信息
+        function RemoveHeaderLabelChangeDateByUID() {
+            ctl.RemoveHeaderLabelChangeDateByUID('dcHeaderLabels_2');
+        }
+        //删除所有转科信息
+        function RemoveHeaderLabelChangeDate() {
+            ctl.RemoveHeaderLabelChangeDate();
+        }
+
+        function SaveTemperatureDocumentToFile(format) {
+            ctl.SaveTemperatureDocumentToFile('aaa', format);
+        }
+        function ShowDesignerDialog() {
+            ctl.ShowDesignerDialog();
+        }
+        //打开本地文件
+        function file() {
+            ctl.LoadTemperatureDocumentFromFile();
+        }
+
+        var jsonDataHasValue = {
+            "ViewMode": "Page",
+            "PageIndex": 1,
+            "NumOfPages": 3,
+            "Config": {
+                "SpecifyStartDate": null,
+                "SpecifyEndDate": null,
+                "GridYSplitNum": 10,
+                "GridYSpaceNum": 5,
+                "Title": "体温单",
+                "SpecifyTitleHeight": 300,
+                "NumOfDaysInOnePage": 7,
+                "BigVerticalGridLineColorValue": "#ff0000",
+                "BigVerticalGridLineWidth": 1,
+                "BigTitleFontName": "宋体",
+                "BigTitleFontBold": false,
+                "TagString": null,
+                "GridLineColorValue": "#d8d8d8",
+                "FontName": "宋体",
+                "FontSize": 9,
+                "DateFormatString": "yyyy-MM-dd",
+                "DateFormatStringForCrossMonth": "MM-dd",
+                "DateFormatStringForCrossWeek": "dd",
+                "DateFormatStringForCrossYear": "yyyy-MM-dd",
+                "DateFormatStringForFirstIndexFirstPage": "yyyy-MM-dd",
+                "DateFormatStringForFirstIndexOtherPage": "dd",
+                "PageIndexText": "第[%pageindex%]周",
+                "EnableDataGridLinearAxisMode": false,
+                "DataGridBottomPadding": 0,
+                "DataGridTopPadding": 0,
+                "BigTitleFontSize": 27,
+                "FooterDescription": "",
+                "ThickLineWidth": 2,
+                "ThinLineWidth": 1,
+                "TickTexts": "4,8,12,4,8,12",
+                "TickValues": "4,8,12,16,20,24",
+                "TickColorValues": "#000000,#000000,#000000,#FF0000,#FF0000,#FF0000",
+                "HeaderLabelChangeDate": {
+                    "dcHeaderLabels_2": { //此处键名必须为小标题的UID
+                        "ValueConnectorSymbol": "→",//连接符
+                        "ValueChangeData": [//ValueChangeData固定字段，用于存储转科记录
+                            {
+                                "Time": "2016-03-01 10:00:00",//转科时间（超出体温单时间时失效）
+                                "Value": "外科"//转到科室
+                            },
+                            {
+                                "Time": "2016-03-28 22:00:00",
+                                "Value": "内科"
+                            },
+                            {
+                                "Time": "2016-04-3 22:00:00",
+                                "Value": "耳鼻喉科"
+                            }
+                        ]
+                    }
+                },
+                "HeaderLinesChangeDate": {
+
+                },
+                "FooterLinesChangeDate": {
+
+                },
+                "PageSettings": {
+                    "PaperSizeName": "A4",
+                    "PaperHeight": 296.93,
+                    "PaperWidth": 210.06,
+                    "Landscape": false,
+                    "TopMargin": 13,
+                    "BottomMargin": 13,
+                    "LeftMargin": 20,
+                    "RightMargin": 30,
+                    "Unit": "Millimeter"
+                },
+                "HeaderLabels": [
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "姓名",
+                        "Value": "张三",
+                        "GroupIndex": 0,
+                        "ValueUnderLine": false,
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "入院日期",
+                        "Value": "2016-03-20",
+                        "GroupIndex": 0,
+                        "ValueUnderLine": false,
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "科别",
+                        "Value": "骨科",
+                        "GroupIndex": 0,
+                        "ValueUnderLine": false,
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "床号",
+                        "Value": "103",
+                        "GroupIndex": 0,
+                        "ValueUnderLine": false,
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "住院号",
+                        "Value": "",
+                        "GroupIndex": 0,
+                        "ValueUnderLine": false,
+                    }
+                ],
+                "HeaderLines": [
+                    {
+                        "Name": "",
+                        "Title": "日期",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "SerialDate",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": "",
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": "",
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                    },
+                    {
+                        "Name": "",
+                        "Title": "住院日数",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "入院",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "GlobalDayIndex",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcHeaderLines_1"
+                    },
+                    {
+                        "Name": "zhuankechuang",
+                        "Title": "转科/床",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "Text",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcHeaderLines_2"
+                    },
+                    {
+                        "Name": "",
+                        "Title": "术后日数",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "手术",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "DayIndex",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": false,
+                        "AfterOperaDaysBeginOne": true,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcHeaderLines_3"
+                    },
+                    {
+                        "Name": "",
+                        "Title": "时间",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "HourTick",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcHeaderLines_4"
+                    }
+                ],
+                "Labels": [
+                    {
+                        "Left": "10",
+                        "Top": "2250",
+                        "Width": "30",
+                        "Height": "270",
+                        "Text": "疼痛评分",
+                        "MultiLine": "true",
+                        "ShowBorder": false,
+                        "BackColorValue": "#FFFFFF",
+                        "TextColorValue": null,
+                        "Alignment": "Center",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": null,
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_0"
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 500,
+                        "Width": 60,
+                        "Height": 100,
+                        "Text": "注",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_1"
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 620,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "脉搏",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_2",
+                        "SymbolVisible": true,
+                        "SymbolStyle": "SolidCicle",
+                        "SymbolColorValue": "red",
+                        "SymbolSize": 5
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 840,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "心率",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_3",
+                        "SymbolVisible": true,
+                        "SymbolStyle": "HollowCicle",
+                        "SymbolColorValue": "red",
+                        "SymbolSize": 5
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 1060,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "体温",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_4"
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 1280,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "口表",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_5",
+                        "SymbolVisible": true,
+                        "SymbolStyle": "SolidCicle",
+                        "SymbolColorValue": "blue",
+                        "SymbolSize": 5
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 1520,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "腋表",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_6",
+                        "SymbolVisible": true,
+                        "SymbolStyle": "Cross",
+                        "SymbolColorValue": "blue",
+                        "SymbolSize": 4
+                    },
+                    {
+                        "Left": 1910,
+                        "Top": 1760,
+                        "Width": 60,
+                        "Height": 200,
+                        "Text": "肛表",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": "",
+                        "TextColorValue": "",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": "",
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_7",
+                        "SymbolVisible": true,
+                        "SymbolStyle": "HollowCicle",
+                        "SymbolColorValue": "blue",
+                        "SymbolSize": 5
+                    }
+                ],
+                "FooterLines": [
+                    {
+                        "Name": "huxi",
+                        "Title": "呼吸 次/分",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": "100",
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "ShowByTick",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_0"
+                    },
+                    {
+                        "Name": "xueya",
+                        "Title": "血压",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": "3",
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_1"
+                    },
+                    {
+                        "Name": "dabian",
+                        "Title": "大便",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_2"
+                    },
+                    {
+                        "Name": "xiaobian",
+                        "Title": "小便",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_3"
+                    },
+                    {
+                        "Name": "ruliang",
+                        "Title": "总入量",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_4"
+                    },
+                    {
+                        "Name": "chuliang",
+                        "Title": "总出量",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_5"
+                    },
+                    {
+                        "Name": "tizhong",
+                        "Title": "体重",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": "6",
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_6"
+                    },
+                    {
+                        "Name": "shengao",
+                        "Title": "身高",
+                        "TitleColorValue": "#000000",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": "6",
+                        "ValueType": "TickText",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 0,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        "ExtendGridLineType": "Above",
+                        "UID": "dcFooterLines_7"
+                    }
+                ],
+                "YAxisInfos": [
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 180,
+                        "MinValue": 40,
+                        "Name": "maibo",
+                        "Style": "Value",
+                        "SymbolColorValue": "",
+                        "SymbolStyle": "SolidCicle",
+                        "Title": "脉搏",
+                        "YSplitNum": 7,
+                        "EnableLanternValue": true,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "",
+                        "ShadowName": "xinlv",
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": -10000,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": "tiwen",
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000ff",
+                        "LanternValueColorForDownValue": "#ff0000",
+                        "TopPadding": 0.09,
+                        "BottomPadding": 0.19,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#ff0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": "",
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": false,
+                        "ShadowStyle": "LeftSlant",
+                        "UID": "dcYAxisInfos_0",
+                        "Index": 0,
+                        "thisYInfoHeight": 431.55568048095705,
+                        "YTopHeight": 53.944460060119624,
+                        "YBottomHeight": 113.8827490158081
+                    },
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 180,
+                        "MinValue": 40,
+                        "Name": "xinlv",
+                        "Style": "Value",
+                        "SymbolColorValue": "",
+                        "SymbolStyle": "HollowCicle",
+                        "Title": "",
+                        "YSplitNum": 7,
+                        "EnableLanternValue": true,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "",
+                        "ShadowName": "",
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": -10000,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": "",
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000ff",
+                        "LanternValueColorForDownValue": "#ff0000",
+                        "TopPadding": 0.09,
+                        "BottomPadding": 0.19,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#ff0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": "",
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": false,
+                        "ShadowStyle": "LeftSlant",
+                        "UID": "dcYAxisInfos_1",
+                        "Index": 1,
+                        "thisYInfoHeight": 431.55568048095705,
+                        "YTopHeight": 53.944460060119624,
+                        "YBottomHeight": 113.8827490158081
+                    },
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 42,
+                        "MinValue": 35,
+                        "Name": "tiwen",
+                        "Style": "Value",
+                        "SymbolColorValue": "#0000ff",
+                        "SymbolStyle": "Cross",
+                        "Title": "体温",
+                        "YSplitNum": 7,
+                        "EnableLanternValue": true,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "",
+                        "ShadowName": "",
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": 37,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": "",
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000ff",
+                        "LanternValueColorForDownValue": "#ff0000",
+                        "TopPadding": 0.09,
+                        "BottomPadding": 0.19,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#ff0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": "",
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": false,
+                        "ShadowStyle": "LeftSlant",
+                        "TitleAlign": "",
+                        "Scales": null,
+                        "ColorValueForPointValue": "#000000",
+                        "ColorValueForUpValue": "#FF0000",
+                        "ColorValueForDownValue": "#FF0000",
+                        "UID": "dcYAxisInfos_2",
+                        "Index": 2,
+                        "thisYInfoHeight": 431.55568048095705,
+                        "YTopHeight": 53.944460060119624,
+                        "YBottomHeight": 113.8827490158081
+                    },
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 100,
+                        "MinValue": 0,
+                        "Name": "wenben",
+                        "Style": "Text",
+                        "SymbolColorValue": "",
+                        "SymbolStyle": "SolidCicle",
+                        "Title": "文本",
+                        "YSplitNum": 7,
+                        "EnableLanternValue": false,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "",
+                        "ShadowName": "",
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": false,
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": -10000,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": "",
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000ff",
+                        "LanternValueColorForDownValue": "#ff0000",
+                        "TopPadding": 0.09,
+                        "BottomPadding": 0.19,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#ff0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": "",
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": true,
+                        "ShadowStyle": "LeftSlant",
+                        "TitleAlign": "",
+                        "Scales": null,
+                        "ColorValueForPointValue": "#000000",
+                        "ColorValueForUpValue": "#FF0000",
+                        "ColorValueForDownValue": "#FF0000",
+                        "UID": "dcYAxisInfos_3",
+                        "Index": 3,
+                        "thisYInfoHeight": 431.55568048095705,
+                        "YTopHeight": 53.944460060119624,
+                        "YBottomHeight": 113.8827490158081
+                    },
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 8,
+                        "MinValue": 2,
+                        "Name": "tengtong",
+                        "Style": "Value",
+                        "SymbolColorValue": "",
+                        "SymbolStyle": "SolidTriangle",
+                        "Title": "",
+                        "YSplitNum": 3,
+                        "EnableLanternValue": true,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "#FF0000",
+                        "ShadowName": "",
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": -10000,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": "",
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000ff",
+                        "LanternValueColorForDownValue": "#ff0000",
+                        "TopPadding": 0.9,
+                        "BottomPadding": 0.005,
+                        "MergeIntoLeft": true,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#ff0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": "",
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": false,
+                        "ShadowStyle": "LeftSlant",
+                        "TitleAlign": "",
+                        "Scales": null,
+                        "ColorValueForPointValue": "#000000",
+                        "ColorValueForUpValue": "#FF0000",
+                        "ColorValueForDownValue": "#FF0000",
+                        "UID": "dcYAxisInfos_4",
+                        "Index": 4,
+                        "thisYInfoHeight": 56.94137450790402,
+                        "YTopHeight": 539.4446006011963,
+                        "YBottomHeight": 2.9969144477844236
+                    }
+                ],
+            },
+            "Parameters": [],
+            "Values": []
+        }
+
+    </script>
+</body>
+
+</html>

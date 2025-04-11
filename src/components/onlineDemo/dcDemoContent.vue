@@ -125,7 +125,7 @@ const changeKeyDownAndKeyUpToStore = () => {
 };
 
 // 初始化控件
-const scriptUrls = ["./_framework/dcwriter5.js", "./_framework/jquery.js"];
+const scriptUrls = ["https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js", "./_framework/jquery.js"];
 
 const scriptPromises = scriptUrls.map((url) => {
   return new Promise((resolve, reject) => {

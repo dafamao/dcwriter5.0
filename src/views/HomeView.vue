@@ -39,19 +39,37 @@ import DCHeader from "@/components/home/dcHomeHeader.vue";
 import DCBody from "@/components/home/dcHomeBody.vue";
 import DCSubPageBody from "@/components/subpage/dcDetailPage.vue";
 import zhuhe from "@/components/svgComponents/zhuhe.vue";
-import { watch ,ref } from "vue";
+import { useRoute } from 'vue-router';
+import { watch ,ref,onMounted } from "vue";
 //滚动事件
 const isScrolled = ref(false);
 const changePageIndex = ref(1);
 const subPageIndex = ref(0);
+const route = useRoute();
+onMounted(() => {
+  console.log(route);
+  if (route.query.hasOwnProperty('go')) {
+    let jump=route.query['go']
+    switch (jump) {
+      case 'CustomerConsultation':
+      changeIndexFun(2,6)
+        break;
+    
+      default:
+        break;
+    }
+  }
+})
 const onScroll = (event) => {
   const { scrollTop } = event.target; // 获取滚动位置
   isScrolled.value = scrollTop > 0; // 判断是否滚动
 };
 
-const changeIndexFun = (val) => {
+const changeIndexFun = (val,indexValue=2) => {
+  console.log(val,indexValue);
   changePageIndex.value = val;
-  subPageIndex.value = 2;
+  subPageIndex.value = indexValue;
+  
 }
 
 //顶部展示

@@ -26,7 +26,7 @@
         </div>
         <div class="button-group">
           <div class="button-group1">
-            <div class="button-group-item">{{ $t("getStarted") }}</div>
+            <div class="button-group-item" onclick="window.open('http://www.dcwriter.cn:5057/')">{{ $t("getStarted") }}</div>
             <div class="button-group-item2" @click="quickStart()">
               {{ $t("quickStart") }}
               <svg
@@ -47,7 +47,7 @@
                 ></path>
               </svg>
             </div>
-            <div class="button-group-item3">
+            <div class="button-group-item3" @click="emits('changeIndexFun',2,6)">
               {{ $t("GetLatest5") }}
               <svg
                 t="1735190995639"
@@ -325,8 +325,8 @@
           <div class="dc-home-body-view-item-Text-desc">
             {{ $t("OFDFormatDesc") }}
           </div>
-          <div class="dc-home-body-view-item-Text-button">
-            <div class="dc-home-body-view-item-Text-button1">
+          <div class="dc-home-body-view-item-Text-button" onclick="window.open('http://www.dcwriter.cn:5057/#/DataFormat/PlateStructured')">
+            <div class="dc-home-body-view-item-Text-button1" >
               {{ $t("ExperienceNow") }}
             </div>
           </div>
@@ -390,7 +390,7 @@
             {{ $t("PartogramDesc") }}
           </div>
           <div class="dc-home-body-view-item-Text-button">
-            <div class="dc-home-body-view-item-Text-button1">
+            <div class="dc-home-body-view-item-Text-button1" onclick="window.open('/demoHtml/Partogram.html')">
               {{ $t("ExperienceNow") }}
             </div>
             <!-- <div class="dc-home-body-view-item-Text-button2">
@@ -408,7 +408,7 @@
             {{ $t("NursingFormDesignDesc") }}
           </div>
           <div class="dc-home-body-view-item-Text-button">
-            <div class="dc-home-body-view-item-Text-button1">
+            <div class="dc-home-body-view-item-Text-button1" onclick="window.open('http://www.dcwriter.cn:9001/')">
               {{ $t("ExperienceNow") }}
             </div>
             <!-- <div class="dc-home-body-view-item-Text-button2">
@@ -433,7 +433,7 @@
           <div class="dc-home-body-view-item-Text-desc">
             {{ $t("SupportMobileDevicesDesc") }}
           </div>
-          <div class="dc-home-body-view-item-Text-button">
+          <div class="dc-home-body-view-item-Text-button"  onclick="window.open('http://www.dcwriter.cn:5057/#/BusinessExample/MobileEdit')">
             <div class="dc-home-body-view-item-Text-button1">
               {{ $t("ExperienceNow") }}
             </div>

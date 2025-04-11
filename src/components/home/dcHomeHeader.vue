@@ -52,9 +52,40 @@
       >
         {{ t("documentation") }}
       </div>
-      <div class="dc_header_right_Item" onclick="window.open('/demo')">
+      <!-- <div class="dc_header_right_Item" onclick="window.open('/demo')">
         {{ t("onlineDemo") }}
-      </div>
+      </div> -->
+      <el-dropdown class="dc_header_right_Item">
+        <span class="el-dropdown-link">
+          {{ t("onlineDemo") }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              @click="openEnDemo"
+              >{{ $t("Demo_En") }}</el-dropdown-item>
+            <el-dropdown-item
+              divided
+              onclick="window.open('http://www.dcwriter.cn:5057/')"
+              >{{ $t("Demo_Complete") }}</el-dropdown-item>
+            <el-dropdown-item
+              divided
+              onclick="window.open('/demoHtml/Temperature.html')">
+              {{ $t("Demo_Temperature") }}
+            </el-dropdown-item>
+            <el-dropdown-item
+              divided
+              onclick="window.open('/demoHtml/Partogram.html')">
+              {{ $t("Demo_Partogram") }}
+            </el-dropdown-item>
+            <el-dropdown-item
+              divided
+              onclick="window.open('/demoHtml/NewbornTemperature.html')">
+              {{ $t("Demo_NewbornTemperature") }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
 
       <el-dropdown class="dc_header_right_Item">
         <span class="el-dropdown-link">
@@ -69,7 +100,7 @@
             >
             <el-dropdown-item
               divided
-              onclick="window.open('http://www.dcwriter.cn:5051/')"
+              onclick="window.open('/public/demoHtml/Temperature.html')"
               >{{ $t("temperatureSheetDesignTool") }}</el-dropdown-item
             >
             <el-dropdown-item
@@ -80,8 +111,10 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <div class="dc_header_right_Item">{{ t("technicalSupport") }}</div>
-      <div class="dc_header_right_Item">{{ t("downloadPurchase") }}</div>
+      <div class="dc_header_right_Item" @click="goCustomer">{{ t("technicalSupport") }}</div>
+      <div class="dc_header_right_Item" @click="goCustomer">{{ t("downloadPurchase") }}</div>
+      <div class="dc_header_right_Item" onclick="window.open('https://www.dcwriter.cn:8765/')">{{ t("OldDemo") }}</div>
+      <div class="dc_header_right_Item" @click="emits('changeIndexFun',2,12)">{{ t("UpdateLog") }}</div>
       <el-dropdown class="dc_header_right_Language">
         <span class="el-dropdown-link">
           {{ locale === "en" ? "English" : "中文"
@@ -182,8 +215,7 @@
 
       <div
         class="dc_header_right_Item dc_header_right_Item_github"
-        title="github" onclick="  
-          window.open('https://github.com/dafamao/dcwriter5.0')"
+        title="github" 
       >
         <svg
           t="1735200858657"
@@ -341,7 +373,7 @@
 <script setup>
 import sunny from "@/components/svgComponents/sunny.vue";
 import moon from "@/components/svgComponents/moon.vue";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import {
   // ElInput,
   ElDropdown,
@@ -364,6 +396,13 @@ function ThemeClick() {
   themeSwitch.value = !themeSwitch.value;
   changeThemeSwitch();
 }
+function openEnDemo(){
+  // locale.value = 'en'
+  nextTick(()=>{
+    window.open('/demo')
+  })
+  
+}
 
 //切换主题
 function changeThemeSwitch() {
@@ -378,6 +417,10 @@ function changeThemeSwitch() {
 const emits = defineEmits(["changeIndexFun"]);
 const returnHome = () => {
   emits("changeIndexFun",1)
+}
+const goCustomer = () => {
+  console.log('goCustomer');
+  emits("changeIndexFun",2,6)
 }
 </script>
 <style scoped>

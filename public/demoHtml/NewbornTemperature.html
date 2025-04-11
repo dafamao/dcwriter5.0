@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+    <style>
+        .toolBox {
+         /* height: 40px; */
+         width: 100%;
+         border: 1px solid #dcdfe6;
+         display: flex;
+         font-size: 13px;
+         overflow-x: auto;
+         overflow-y: hidden;
+      }
+
+      .toolBox span {
+         display: inline-table;
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 5px 10px;
+         min-width: 50px;
+         height: 18px;
+         white-space: nowrap
+      }
+
+      .toolBox select {
+         margin: 5px;
+         border-radius: 8px;
+         border: 1px solid #dcdfe6;
+         padding: 3px 10px;
+         min-width: 50px;
+         height: 29px;
+      }
+
+      #FontNameSelect {
+         min-width: 150px
+      }
+
+      .toolBox span:has(select) {
+         padding: 0px;
+         /* margin: 0px; */
+      }
+
+      .toolBox span:hover {
+         border: 1px solid #4e6ef2;
+         cursor: pointer;
+      }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="toolBox">
+            <span onclick="blankPage()">创建空白页面</span>
+            <span onclick="clearModel()">清空模板</span>
+            <span onclick="file()">加载本地json</span>
+            <span onclick="save()">保存为xml</span>
+            <span onclick="download()">下载本地xml</span>
+            <span onclick="savePDF()">下载本地pdf</span>
+            <span onclick="SaveTemperatureDocumentToString()">保存为json</span>
+            <span onclick="print1()">打印</span>
+
+        </div>
+        <div class="toolBox">
+            <span onclick="ViewMode('singlepage')">单页模式</span>
+            <span onclick="ViewMode('page')">多页模式</span>
+            <span onclick="SetTemperaturePageIndex()">翻到指定页</span>
+            <br>
+            <span onclick="GetHeaderLabelProperties()">获取所有眉栏数据</span>
+            <span onclick="GetHeaderLabelProperties('dcHeaderLabels_0')">获取指定眉栏数据</span>
+            <span onclick="SetHeaderLabelProperties()">设置眉栏数据</span>
+            <br>
+            <span onclick="GetSpecialItemsProperties()">获取所有特殊项目</span>
+            <span onclick="GetSpecialItemsProperties('dcFooterLines_0')">获取指定特殊项目</span>
+            <span onclick="SetSpecialItemsProperties()">设置指定特殊项目</span>
+        </div>
+        <div class="toolBox">
+            <span onclick="addYAxisTiwen()">体温加点</span>
+            <span onclick="addYAxisTizhong()">体重加点</span>
+            <span onclick="GetYAxisInfosValue()">获取所有描点数据</span>
+            <span onclick="SetTableData()">表格赋值</span>
+
+            <span onclick="GetTablesDataSource('datatable47564')">获取指定表格的数据绑定参数</span>
+            <span onclick="GetTablesDataSource()">获取所有表格的数据绑定参数</span>
+            <span onclick="GetTableData('datatable47564')">获取指定表格的数据</span>
+
+
+        </div>
+        <div id='myWriterControl' servicepageurl="http://117.89.85.111:8085/ServicePage.aspx"
+            style="height:  calc(100% - 120px); width: 100%; border: 1px solid #ccc;overflow: auto;"
+            dctype='DCTemperatureControlForWASM'>
+        </div>
+    </div>
+    <base href='/' target='_blank'>
+    <script src="https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js"></script>
+    <script language="javascript">
+
+        var ctl = document.getElementById("myWriterControl");
+        CreateTemperatureControlForWASM(ctl);
+
+        ctl.EventTemperatureControlInit = function (a, b, c) {
+            ctl.LoadTemperatureDocumentFromString(JSON.stringify(jsonData));
+        };
+        //获取眉栏数据
+        function GetHeaderLabelProperties(UID) {
+            if (UID) {
+                var result = ctl.GetHeaderLabelProperties(UID);
+                console.log("指定眉栏数据:", result);
+            } else {
+                var result = ctl.GetHeaderLabelProperties();
+                console.log("眉栏数据:", result);
+            }
+
+        }
+
+        //设置眉栏数据
+        function SetHeaderLabelProperties() {
+            var options = {
+                "Title": "姓名",
+                "Value": "张三",
+            };
+            ctl.SetHeaderLabelProperties("dcHeaderLabels_0", options);
+        }
+
+        //获取特殊项目数据
+        function GetSpecialItemsProperties(UID) {
+            if (UID) {
+                var result = ctl.GetSpecialItemsProperties(UID);
+                console.log("指定特殊项目数据:", result);
+            } else {
+                var result = ctl.GetSpecialItemsProperties();
+                console.log("特殊项目数据:", result);
+            }
+        }
+
+        //设置特殊项目数据
+        function SetSpecialItemsProperties() {
+            //先打开设计模式
+            ctl.DesignerMode(true);
+            var options = {
+                "Title": "1111111111",
+            };
+            ctl.SetSpecialItemsProperties("dcFooterLines_0", options);
+            //关闭设计模式
+            ctl.DesignerMode(false);
+
+        }
+
+        //获取所有描点数据
+        function GetYAxisInfosValue() {
+            var tzresult = ctl.GetYAxisInfosValue("tizhong");
+            console.log("体重描点数据:", tzresult);
+            var twresult = ctl.GetYAxisInfosValue("tiwen");
+            console.log("体温描点数据:", twresult);
+        }
+
+
+
+        //获取表格数据
+        function GetTableData(tableId) {
+            var tableData = ctl.GetTableData(tableId);
+            console.log(tableData);
+        }
+        //获取指定表格的数据绑定参数
+        function GetTablesDataSource(tableId = null) {
+            var result = ctl.GetTablesDataSource(tableId);
+            console.log("表格的数据绑定参数:", result);
+        }
+
+        //体重加点
+        function addYAxisTizhong() {
+            var tizhongYaxis = [];
+            var timearr = ["04", "08", "12", "16", "20", "24"];
+            for (var i = 0; i < 20; i++) {
+                for (var j = 0; j < timearr.length; j++) {
+                    //体温35-40.5的随机数
+                    var value = (Math.random() * (5000 - 1500) + 1500);
+                    var time = `2024-10-${i} ${timearr[j]}:00:00`;
+                    var yaxis = {
+                        Value: value,
+                        Time: time
+                    };
+                    tizhongYaxis.push(yaxis);
+                }
+            }
+            console.log(tizhongYaxis, '====tizhongYaxis');
+
+
+            document.TemperatureWriterControl.SetYAxisInfosValue("tizhong", tizhongYaxis);
+        }
+        //体温加点
+        function addYAxisTiwen() {
+            var tiwemYaxis = [];
+            var timearr = ["02", "06", "10", "14", "18", "22"];
+            for (var i = 0; i < 20; i++) {
+                for (var j = 0; j < timearr.length; j++) {
+                    //体温35-40.5的随机数
+                    var value = (Math.random() * (40.5 - 35) + 35).toFixed(1);
+                    var time = `2024-10-${i + 1} ${timearr[j]}:00:00`;
+                    var yaxis = {
+                        Value: value,
+                        Time: time
+                    };
+                    tiwemYaxis.push(yaxis);
+                }
+            }
+            console.log(tiwemYaxis, '====tiwemYaxis');
+            document.TemperatureWriterControl.SetYAxisInfosValue("tiwen", tiwemYaxis);
+        }
+
+        //创建空白页面
+        function blankPage() {
+            ctl.TemperatureFileNew();
+        }
+        //q清空模板
+        function clearModel() {
+            ctl.LoadTemperatureDocumentFromString(JSON.stringify(jsonData), true);
+        }
+        //打开本地文件
+        function file() {
+            ctl.LoadTemperatureDocumentFromFile();
+        }
+        //下载pdf
+        function savePDF() {
+            ctl.SaveTemperatureDocumentToPDF(function (base64) {
+                console.log(base64);
+                downloadPDF(base64);
+            });
+        }
+        function downloadPDF(base64) {
+            const link = document.createElement('a');
+            link.href = base64;
+            link.download = 'downloaded.pdf';
+            link.click();
+            link.remove();
+        }
+        //保存
+        function save() {
+            var a = ctl.SaveTemperatureDocumentToString();
+            console.log(a);
+        }
+        //下载
+        function download() {
+            ctl.SaveTemperatureDocumentToFile();
+        }
+
+        //下载为json
+        function SaveTemperatureDocumentToString() {
+            ctl.SaveTemperatureDocumentToString('json');
+        }
+
+        //打印
+        function print1() {
+            ctl.PrintTemperatureDocument({
+                //PrintMode: "OddPage", //EvenPage  OddPage
+                //SpecifyPageIndexs: "1,3,4-6"
+                //FromPage: 2,
+                // ToPage: 3,
+            });
+        }
+
+        function ViewMode(type) {
+            ctl.SetTemperatureViewMode(type);
+        }
+
+        function SetTemperaturePageIndex() {
+            var index = prompt("请输入页码：");
+            ctl.SetTemperaturePageIndex(parseFloat(index));
+        }
+
+        //表格赋值
+        function SetTableData() {
+            ctl.SetTableData("datatable47564", NewbornTableData);
+        }
+
+
+        var NewbornTableData = [
+            {
+                "date": "06-29",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "06-30",
+                "birthdate": "2",
+                "muru": "√",
+                "rengong": "√",
+                "hunhe": "√",
+                "tangshui": "√",
+                "huangdan": "13.1",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-01",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "6.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "√",
+                "ekouchuang": "√",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-02",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "9.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "√",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "√",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-03",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "1.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "√",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "√",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-04",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "√",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "√",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-05",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "√",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "0.4",
+                "milan": "",
+                "nongpaozhen": "√",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "√",
+                "ekouchuang": "√",
+                "chuxie": "√",
+                "ganzao": "√",
+                "yanzheng": "√",
+                "tuoluo": "√",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-06",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "√",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "10.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "√",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "√",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-07",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "√",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-08",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "√",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "√",
+                "tuoluo": "",
+                "cishu": "2",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "2",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-09",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "√",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "√",
+                "tuoluo": "",
+                "cishu": "1",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "4",
+                "outu": "",
+                "qianming": ""
+            },
+            {
+                "date": "07-10",
+                "birthdate": "1",
+                "muru": "",
+                "rengong": "",
+                "hunhe": "√",
+                "tangshui": "",
+                "huangdan": "3.4",
+                "milan": "",
+                "nongpaozhen": "",
+                "wenzhen": "",
+                "niaobuzhen": "",
+                "hongzhong": "√",
+                "fenmi": "",
+                "guanghua": "√",
+                "pokui": "",
+                "ekouchuang": "",
+                "chuxie": "",
+                "ganzao": "√",
+                "yanzheng": "",
+                "tuoluo": "",
+                "cishu": "4",
+                "yanse": "黑",
+                "xingzhi": "糊",
+                "xiaobian": "3",
+                "outu": "",
+                "qianming": ""
+            }
+
+        ];
+
+        var jsonData = {
+            "ViewMode": "Page",
+            "PageIndex": 0,
+            "NumOfPages": 0,
+            "Config": {
+                "SpecifyStartDate": null,
+                "SpecifyEndDate": null,
+                "GridYSplitNum": 11,
+                "GridYSpaceNum": 4,
+                "Title": "伊 宁 县 人 民 医 院",
+                "SpecifyTitleHeight": 300,
+                "NumOfDaysInOnePage": 7,
+                "BigVerticalGridLineColorValue": "red",
+                "BigVerticalGridLineWidth": 1,
+                "GridLineColorValue": "#CCCCCC",
+                "FontName": "宋体",
+                "FontSize": 9,
+                "DateFormatString": "yyyy-MM-dd",
+                "DateFormatStringForCrossMonth": "MM-dd",
+                "DateFormatStringForCrossWeek": "dd",
+                "DateFormatStringForCrossYear": "yyyy-MM-dd",
+                "DateFormatStringForFirstIndexFirstPage": "yyyy-MM-dd",
+                "DateFormatStringForFirstIndexOtherPage": "dd",
+                "PageIndexText": "第[%pageindex%]周",
+                "EnableDataGridLinearAxisMode": false,
+                "DataGridBottomPadding": 0.1,
+                "DataGridTopPadding": 0.1,
+                "BigTitleFontSize": 22,
+                "FooterDescription": "",
+                "ThickLineWidth": 1,
+                "ThinLineWidth": 1,
+                "TickTexts": "4,8,12,4,8,12",
+                "TickValues": "4,8,12,16,20,24",
+                "TickColorValues": "#FF0000,'','','',#FF0000,#FF0000",
+                "PageSettings": {
+                    "PaperSizeName": "A4",
+                    "PaperHeight": 296.93,
+                    "PaperWidth": 210.06,
+                    "Landscape": false,
+                    "TopMargin": 13,
+                    "BottomMargin": 13,
+                    "LeftMargin": 13,
+                    "RightMargin": 13,
+                    "Unit": "Millimeter"
+                },
+                "HeaderLabels": [
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "母姓名",
+                        "Value": "杨某某",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_0"
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "年龄",
+                        "Value": "30",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_1"
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "职业",
+                        "Value": "",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_2"
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "族别",
+                        "Value": "维族",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_3"
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "床号",
+                        "Value": "101-2",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_4"
+                    },
+                    {
+                        "SeperatorChar": ":",
+                        "ParameterName": "",
+                        "Title": "住院号",
+                        "Value": "2006062101791",
+                        "GroupIndex": 0,
+                        "UID": "dcHeaderLabels_5"
+                    }
+                ],
+                "HeaderLines": [
+                    {
+                        "Name": "",
+                        "Title": "日期",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "SerialDate",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": "60",
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "black",
+                        // ExtendGridLineType: "Below",
+                        "UID": "dcHeaderLines_0"
+                    },
+                    {
+                        "Name": "",
+                        "Title": "每日时间",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 1,
+                        "ValueType": "HourTick",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": "60",
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "",
+                        // ExtendGridLineType: "Below",
+                        "UID": "dcHeaderLines_1"
+                    }
+                ],
+                "Labels": [
+                    {
+                        "Left": 16,
+                        "Top": 500,
+                        "Width": 60,
+                        "Height": 900,
+                        "Text": "体重用红色○表示",
+                        "MultiLine": true,
+                        "ShowBorder": false,
+                        "BackColorValue": null,
+                        "TextColorValue": "red",
+                        "Alignment": "Near",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 12,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": null,
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_0"
+                    },
+                    {
+                        "Left": 1030,
+                        "Top": 140,
+                        "Width": 100,
+                        "Height": 100,
+                        "Text": "新生儿记录表",
+                        "MultiLine": false,
+                        "ShowBorder": false,
+                        "BackColorValue": null,
+                        "TextColorValue": null,
+                        "Alignment": "Center",
+                        "LineAlignment": "Center",
+                        "TextFontName": "宋体",
+                        "TextFontSize": 24,
+                        "TextFontBold": false,
+                        "TextFontItalic": false,
+                        "TextFontUnderline": false,
+                        "ImageDataBase64String": null,
+                        "ParameterName": "",
+                        "PositionFixModeForAutoHeightLine": "None",
+                        "UID": "dcLabels_1"
+                    }
+                ],
+                "FooterLines": [
+                    {
+                        "Name": "",
+                        "Title": "特殊治疗和检查",
+                        "StartDateKeyword": "",
+                        "LayoutType": "Normal",
+                        "TickStep": 6,
+                        "ValueType": "Text",
+                        "TickLineVisible": true,
+                        "SpecifyHeight": 200,
+                        "AutoHeight": false,
+                        "AfterOperaDaysFromZero": true,
+                        "AfterOperaDaysBeginOne": false,
+                        "TextFontName": "宋体",
+                        "TextFontSize": 9,
+                        "LoopTextList": null,
+                        "UpAndDownTextType": "None",
+                        "TitleAlign": "Center",
+                        "SpecifyTitleWidth": 0,
+                        "PreserveStartKeywordOrder": false,
+                        "PageTitleTexts": null,
+                        "BlankDateWhenNoData": false,
+                        "EndDateKeyword": "",
+                        "TextColorValue": "black",
+                        "UID": "dcFooterLines_0"
+                    }
+                ],
+                "YAxisInfos": [
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 5000,
+                        "MinValue": 1500,
+                        "Name": "tizhong",
+                        "Style": "Value",
+                        "SymbolColorValue": "red",
+                        "SymbolStyle": "HollowCicle",
+                        "Title": "",
+                        "YSplitNum": 6,
+                        "EnableLanternValue": false,
+                        "SymbolSize": 20,
+                        "TitleColorValue": "red",
+                        "ShadowName": null,
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "TitleAlign": "left",
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": 2740,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": null,
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000FF",
+                        "LanternValueColorForDownValue": "#FF0000",
+                        "TopPadding": 20,
+                        "BottomPadding": 5,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 240,
+                        "AlertLineColorValue": "#FF0000",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": null,
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": true,
+                        "ShadowStyle": "LeftSlant",
+                        "UID": "dcYAxisInfos_0",
+                        "Index": 0,
+                        "thisYInfoHeight": 319.1039999999999,
+                        "YTopHeight": 39.888000000000005,
+                        "YBottomHeight": 39.888000000000005,
+                        "Scales": [
+                            {
+                                "ScaleRate": 0,
+                                "Value": 1500,
+                            },
+                            {
+                                "ScaleRate": 0.15,
+                                "Value": 2000,
+                            },
+                            {
+                                "ScaleRate": 0.31,
+                                "Value": 2500,
+                            },
+                            {
+                                "ScaleRate": 0.475,
+                                "Value": 3000,
+                            },
+                            {
+                                "ScaleRate": 0.64,
+                                "Value": 3500,
+                            },
+                            {
+                                "ScaleRate": 0.8,
+                                "Value": 4000,
+                            },
+                            {
+                                "ScaleRate": 1,
+                                "Value": 5000
+                            }
+                        ]
+                    },
+                    {
+                        "AllowOutofRange": false,
+                        "MaxValue": 41,
+                        "MinValue": 35,
+                        "Name": "tiwen",
+                        "Style": "Value",
+                        "SymbolColorValue": "green",
+                        "SymbolStyle": "SolidCicle",
+                        "Title": "",
+                        "YSplitNum": 6,
+                        "EnableLanternValue": false,
+                        "SymbolSize": 20,
+                        "TitleColorValue": null,
+                        "ShadowName": null,
+                        "CharSymbol": "R",
+                        "CharLantern": "R",
+                        "TitleVisible": true,
+                        "TitleAlign": "left",
+                        "ShowLegendInRule": false,
+                        "BottomTitle": "",
+                        "RedLineValue": 40.12,
+                        "VerticalLine": false,
+                        "ShadowPointVisible": true,
+                        "HollowCovertTargetName": null,
+                        "AllowInterrupt": true,
+                        "LanternValueColorForUpValue": "#0000FF",
+                        "LanternValueColorForDownValue": "#FF0000",
+                        "TopPadding": 20,
+                        "BottomPadding": 5,
+                        "MergeIntoLeft": false,
+                        "SpecifyTitleWidth": 0,
+                        "AlertLineColorValue": "#00FF00",
+                        "LineStyleForLanternValue": "Dash",
+                        "ValueTextBackColorValue": null,
+                        "ShowPointValue": false,
+                        "Visible": true,
+                        "BorderVisible": true,
+                        "ShadowStyle": "LeftSlant",
+                        "UID": "dcYAxisInfos_1",
+                        "Index": 1,
+                        "thisYInfoHeight": 309.504,
+                        "YTopHeight": 38.688,
+                        "YBottomHeight": 38.688,
+                        "Scales": [
+                            {
+                                "ScaleRate": 0,
+                                "Value": 35,
+                            },
+                            {
+                                "ScaleRate": 0.15,
+                                "Value": 36,
+                            },
+                            {
+                                "ScaleRate": 0.31,
+                                "Value": 37,
+                            },
+                            {
+                                "ScaleRate": 0.475,
+                                "Value": 38,
+                            },
+                            {
+                                "ScaleRate": 0.64,
+                                "Value": 39,
+                            },
+                            {
+                                "ScaleRate": 0.8,
+                                "Value": 40,
+                            },
+                            {
+                                "ScaleRate": 1,
+                                "Value": 41,
+                            }
+                        ]
+                    },
+					{
+			"AllowOutofRange": "true",
+			"MaxValue": 100,
+			"MinValue": 0,
+			"Name": "wenben",
+			"Style": "Text",
+			"SymbolColorValue": null,
+			"SymbolStyle": "SolidCicle",
+			"Title": "事件(禁止修改)",
+			"YSplitNum": "8",
+			"EnableLanternValue": "true",
+			"SymbolSize": "20",
+			"TitleColorValue": null,
+			"ShadowName": null,
+			"CharSymbol": "R",
+			"CharLantern": "R",
+			"TitleVisible": true,
+			"ShowLegendInRule": true,
+			"BottomTitle": "",
+			"RedLineValue": -10000,
+			"VerticalLine": "true",
+			"ShadowPointVisible": true,
+			"HollowCovertTargetName": null,
+			"AllowInterrupt": false,
+			"LanternValueColorForUpValue": "#0000FF",
+			"LanternValueColorForDownValue": "#FF0000",
+			"TopPadding": "0",
+			"BottomPadding": "0.31",
+			"MergeIntoLeft": false,
+			"SpecifyTitleWidth": 0,
+			"AlertLineColorValue": "#FF0000",
+			"LineStyleForLanternValue": "Dash",
+			"ValueTextBackColorValue": null,
+			"ShowPointValue": false,
+			"Visible": true,
+			"BorderVisible": true,
+			"ShadowStyle": "LeftSlant",
+			"TitleAlign": null,
+			"Scales": null,
+			"ColorValueForUpValue": "#FF0000",
+			"ColorValueForPointValue": "#000000",
+			"ColorValueForDownValue": "#FF0000",
+			"AbNormalRangeSettings": "\\n          <NormalRangeUpLineStyle>\\n            <Width>0</Width>\\n            <Color>#00FFFFFF</Color>\\n          </NormalRangeUpLineStyle>\\n          <NormalRangeDownLineStyle>\\n            <Width>0</Width>\\n            <Color>#00FFFFFF</Color>\\n          </NormalRangeDownLineStyle>\\n        ",
+			"UID": "dcYAxisInfos_3",
+			"Index": 3,
+			"thisYInfoHeight": 307.74399999999997,
+			"YTopHeight": 52.16,
+			"YBottomHeight": 161.69599999999997
+		}
+                ]
+            },
+            "Parameters": [],
+            "Values": [],
+            "BottomTableGroups": {
+                "datatable47564": {
+                    // "id": "datatable47564",
+                    // "label": "datatable47564",
+                    "rowSpacing": 7,
+                    "keepHeight": 60,
+                    "tableHeight": 300,
+                    "tableWidth": "100%",
+                    "border": true,
+                    "tableColumns": [
+                        {
+                            "columnId": 1,
+                            "prop": "date",
+                            "label": "日<br>期",
+                            "width": "40",
+                            "headerFlag": false,
+                            "show": true,
+                            "align": "center",
+                            "fontname": "宋体",
+                            "fontcolor": "black",
+                            "bold": false
+                        },
+                        {
+                            "columnId": 2,
+                            "prop": "birthdate",
+                            "label": "出生<br>天数",
+                            "headerFlag": false,
+                            "bold": false,
+                            "fontname": "宋体",
+                        },
+                        {
+                            "columnId": 3,
+                            "label": "喂  养",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 4,
+                                    "prop": "muru",
+                                    "headerFlag": false,
+                                    "label": "母乳",
+                                    "fontsize": 9,
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                    "fontcolor": "black",
+                                },
+                                {
+                                    "columnId": 5,
+                                    "prop": "rengong",
+                                    "headerFlag": false,
+                                    "label": "人工",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 6,
+                                    "prop": "hunhe",
+                                    "headerFlag": false,
+                                    "label": "混合",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 7,
+                                    "prop": "tangshui",
+                                    "headerFlag": false,
+                                    "label": "糖水",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 8,
+                            "label": "皮肤",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 9,
+                                    "prop": "huangdan",
+                                    "headerFlag": false,
+                                    "label": "黄疸",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 10,
+                                    "prop": "milan",
+                                    "headerFlag": false,
+                                    "label": "糜烂",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 11,
+                                    "prop": "nongpaozhen",
+                                    "headerFlag": false,
+                                    "label": "浓疱疹",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 12,
+                                    "prop": "wenzhen",
+                                    "headerFlag": false,
+                                    "label": "温疹",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 13,
+                                    "prop": "niaobuzhen",
+                                    "headerFlag": false,
+                                    "label": "尿布<br>疹",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 14,
+                            "label": "眼",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 15,
+                                    "prop": "hongzhong",
+                                    "headerFlag": false,
+                                    "label": "红肿",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 16,
+                                    "prop": "fenmi",
+                                    "headerFlag": false,
+                                    "label": "分泌",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 17,
+                            "label": "口腔",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 18,
+                                    "prop": "guanghua",
+                                    "headerFlag": false,
+                                    "label": "光滑",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 32,
+                                    "prop": "pokui",
+                                    "headerFlag": false,
+                                    "label": "破溃",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 19,
+                                    "prop": "ekouchuang",
+                                    "headerFlag": false,
+                                    "label": "鹅口<br>疮",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 20,
+                            "label": "脐  带",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 21,
+                                    "prop": "chuxie",
+                                    "headerFlag": false,
+                                    "label": "出血",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 22,
+                                    "prop": "ganzao",
+                                    "headerFlag": false,
+                                    "label": "干燥",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 23,
+                                    "prop": "yanzheng",
+                                    "headerFlag": false,
+                                    "label": "炎症",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 24,
+                                    "prop": "tuoluo",
+                                    "headerFlag": false,
+                                    "label": "脱落",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 25,
+                            "label": "大 便",
+                            "headerFlag": true,
+                            "bold": false,
+                            "fontname": "宋体",
+                            "children": [
+                                {
+                                    "columnId": 26,
+                                    "prop": "cishu",
+                                    "headerFlag": false,
+                                    "label": "次数",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 27,
+                                    "prop": "yanse",
+                                    "headerFlag": false,
+                                    "label": "颜色",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                },
+                                {
+                                    "columnId": 28,
+                                    "prop": "xingzhi",
+                                    "headerFlag": false,
+                                    "label": "性质",
+                                    "fontsize": "10",
+                                    "bold": false,
+                                    "fontname": "宋体",
+                                }
+                            ]
+                        },
+                        {
+                            "columnId": 29,
+                            "prop": "xiaobian",
+                            "label": "小<br>便",
+                            "headerFlag": false,
+                            "bold": false,
+                            "fontname": "宋体",
+                        },
+                        {
+                            "columnId": 30,
+                            "prop": "outu",
+                            "label": "呕<br>吐",
+                            "headerFlag": false,
+                            "bold": false,
+                            "fontname": "宋体",
+                        },
+                        {
+                            "columnId": 31,
+                            "prop": "qianming",
+                            "label": "签名者",
+                            "headerFlag": false,
+                            "bold": false,
+                            "fontname": "宋体",
+                        }
+                    ],
+                    "tableData": null
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

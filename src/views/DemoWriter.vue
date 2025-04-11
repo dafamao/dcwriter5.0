@@ -34,7 +34,10 @@ import DCDemoHeader from "@/components/onlineDemo/dcDemoHeader.vue";
 import DCDemoFooter from "@/components/onlineDemo/dcDemoFooter.vue";
 import DCDemoContent from "@/components/onlineDemo/dcDemoContent.vue";
 import { useCounterStore } from "../stores/counter.js";
+//多语言切换
+import { useI18n } from "vue-i18n";
 const store = useCounterStore();
+const { locale, t } = useI18n();
 import { onMounted } from "vue";
 onMounted(() => {
   // document.documentElement 是全局变量时
@@ -46,6 +49,7 @@ onMounted(() => {
 
   // 设置 css 变量
   el.style.setProperty("--el-color-primary", "#3b64fc");
+  locale.value='en'
 });
 import DCDemoTitleList from "@/components/onlineDemo/dcDemoTitleList.vue";
 </script>

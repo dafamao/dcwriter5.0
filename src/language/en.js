@@ -109,6 +109,13 @@ export default {
   PublicAttributes: "Public Attributes",
   PublicDocumentOptions: "Public Document Options",
   PublicEvent: "Public Event",
+  Demo_En:'EnglishDemo',
+  Demo_Complete:'CompleteDemo',
+  Demo_Temperature:'TemperatureDemo',
+  Demo_Partogram:'PartogramDemo',
+  Demo_NewbornTemperature:'NewbornTemperatureDemo',
+  OldDemo:'OldDemo',
+  UpdateLog:'UpdateLog',
   DcWriterSetting: {
     Cancel: "Cancel",
     Comfirm: "Comfirm",
