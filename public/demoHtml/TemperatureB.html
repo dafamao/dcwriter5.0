@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>体温单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body,
+        #myWriterControlContainer {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        button {
+            margin: 5px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #dcdfe6;
+            padding: 5px 10px;
+            min-width: 50px;
+            line-height: 18px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border: 1px solid #4e6ef2;
+        }
+
+        .hr {
+            width: 100%;
+            height: 1px;
+            border-bottom: 1px solid #dcdfe6;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="myWriterControlContainer">
+        <button onclick="blankPage()">创建空白页面</button>
+        <button onclick="file()">加载本地文档</button>
+        <button onclick="save()">保存</button>
+        <button onclick="download()">下载json文件到本地</button>
+        <button onclick="print1()">打印</button>
+        <button onclick="getpdf()">保存为pdf</button>
+        <div class="hr"></div>
+
+        <button onclick="GetDocumentConfigProperties()">获取全局属性</button>
+        <button onclick="GetHeaderLabelProperties()">获取眉栏列表</button>
+        <button onclick="GetGeneralItemProperties()">获取一般项目列表</button>
+        <button onclick="GetYAxisInfosProperties()">获取体征项目列表</button>
+        <button onclick="GetSpecialItemsProperties()">获取特殊项目列表</button>
+        <div class="hr"></div>
+
+        <button onclick="DesignerMode(true)">打开设计器模式</button>
+        <button onclick="DesignerMode(false)">关闭设计器模式</button>
+        <button onclick="SetHeaderLabelProperties()">修改眉栏属性和值</button>
+        <button onclick="SetGeneralItemProperties()">修改一般项目属性</button>
+        <button onclick="SetYAxisInfosProperties()">修改体征项目属性</button>
+        <button onclick="SetSpecialItemsProperties()">修改特殊项目属性</button>
+        <div class="hr"></div>
+
+        <button onclick="SetYAxisInfosValueTiwen()">体温描点</button>
+        <button onclick="SetYAxisInfosValueMaibo()">脉搏描点</button>
+        <button onclick="SetYAxisInfosValueXinlv()">心率描点</button>
+        <button onclick="SetTengtongValue()">疼痛强度描点</button>
+        <button onclick="SetSpecialItemsValueHuxi()">呼吸赋值</button>
+        <button onclick="SetSpecialItemsValue()">其他特殊项目赋值</button>
+        <div id="myWriterControl" dctype="DCTemperatureControlForWASM" style="height:900px;"></div>
+    </div>
+    <script src="https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js"></script>
+    <script>
+        var ctl = document.getElementById("myWriterControl");
+        CreateTemperatureControlForWASM(ctl);
+        ctl.EventTemperatureControlInit = function (rootElement) {
+            var loadResult = rootElement.LoadTemperatureDocumentFromString(
+                JSON.stringify(jsonDataHasValue)
+            );
+        };
+
+
+        let jsonDataHasValue = {
+            ViewMode: "Page",
+            PageIndex: 0,
+            NumOfPages: 0,
+            Config: {
+                TemperatureMode: "Fahrenheit", //新增，默认值为Defalut，带有华氏度的体温单为：Fahrenheit
+                RightPlaceholderElement: true, //新增，是否显示右侧占位区域。只有在 TemperatureMode=="Fahrenheit"时有效。
+                SpecifyRightPlaceholderElementWidth: 12, //新增，右侧占位区域宽度。只有在 TemperatureMode=="Fahrenheit"时有效。
+                SpecifyStartDate: null,
+                SpecifyEndDate: null,
+                GridYSplitNum: 10,
+                GridYSpaceNum: 5,
+                Title: "南京都昌信息（测试）医院",
+                SpecifyTitleHeight: 260,
+                NumOfDaysInOnePage: 7,
+                BigVerticalGridLineColorValue: "#000000",
+                BigVerticalGridLineWidth: 2,
+                BigTitleFontName: "宋体",
+                BigTitleFontBold: false,
+                TagString: null,
+                GridLineColorValue: "#909090",
+                FontName: "宋体",
+                FontSize: 9,
+                DateFormatString: "yyyy-MM-dd",//时间日期格式
+                DateFormatStringForCrossMonth: "yyyy-MM-dd",//跨月时间日期格式
+                DateFormatStringForCrossWeek: "yyyy-MM-dd",//跨周时间日期格式
+                DateFormatStringForCrossYear: "yyyy-MM-dd",//跨年时间日期格式
+                DateFormatStringForFirstIndexFirstPage: "yyyy-MM-dd",//首页时间日期格式
+                DateFormatStringForFirstIndexOtherPage: "yyyy-MM-dd",//其他页第一个时间日期格式
+                PageIndexText: "第[%pageindex%]周",
+                EnableDataGridLinearAxisMode: false,
+                DataGridBottomPadding: 0,
+                DataGridTopPadding: 0,
+                BigTitleFontSize: 20,
+                FooterDescription: "",
+                ThickLineWidth: 2,
+                ThinLineWidth: 2,
+                TickTexts: "2,6,10,14,18,22",
+                TickValues: "2,6,10,14,18,22",
+                TickColorValues: "#FF0000,#FF0000,,,,#FF0000",
+                PageSettings: {
+                    PaperSizeName: "A4",
+                    PaperHeight: 296.93,
+                    PaperWidth: 210.06,
+                    Landscape: false,
+                    TopMargin: 4,
+                    BottomMargin: 10,
+                    LeftMargin: 10,
+                    RightMargin: 30,
+                    Unit: "Millimeter",
+                },
+                HeaderLabels: [
+                    {
+                        SeperatorChar: ":",
+                        ParameterName: "",
+                        Title: "姓名",
+                        Value: "杨某某",
+                        GroupIndex: 0,
+                        FontBold: false,//新增，是否显示为粗体
+                    },
+                    {
+                        SeperatorChar: ":",
+                        ParameterName: "",
+                        Title: "科别",
+                        Value: "护理中心",
+                        GroupIndex: 0,
+                    },
+                    {
+                        SeperatorChar: ":",
+                        ParameterName: "",
+                        Title: "床号",
+                        Value: "101-2",
+                        GroupIndex: 0,
+                    },
+                    {
+                        SeperatorChar: ":",
+                        ParameterName: "",
+                        Title: "病案号",
+                        Value: "2006062101791",
+                        GroupIndex: 0,
+                    },
+                    {
+                        SeperatorChar: ":",
+                        ParameterName: "",
+                        Title: "入院日期",
+                        Value: "2014-06-25",
+                        GroupIndex: 0,
+                    },
+
+                ],
+                HeaderLines: [
+                    {
+                        Name: "",
+                        Title: "日期",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: 1,
+                        ValueType: "SerialDate",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: "",
+                        UpAndDownTextType: "None",
+                        TitleAlign: "SpaceAround",//新增: 一般项目和特殊项目的标题对齐方式除了原有的"Near""Far""Center"，新增了两个值： "Justify两端对齐" "SpaceAround:两端空白"   
+                        SpecifyTitleWidth: null,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: "",
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: false,
+                    },
+                    {
+                        Name: "",
+                        Title: "时间",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: 1,
+                        ValueType: "HourTick",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "SpaceAround",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                    },
+                ],
+                Labels: [
+                    {
+                        Left: 0,
+                        Top: 470,
+                        Width: 80,
+                        Height: 100,
+                        Text: "华氏",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 100,
+                        Top: 470,
+                        Width: 80,
+                        Height: 100,
+                        Text: "摄氏",
+                        TextFontSize: 9,
+                    },
+
+                    {
+                        Left: 2030,
+                        Top: 470,
+                        Width: 100,
+                        Height: 100,
+                        Text: "脉搏",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 604,
+                        Width: 100,
+                        Height: 100,
+                        Text: "180",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 800,
+                        Width: 100,
+                        Height: 100,
+                        Text: "160",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 996,
+                        Width: 100,
+                        Height: 100,
+                        Text: "140",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 1190,
+                        Width: 100,
+                        Height: 100,
+                        Text: "120",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 1382,
+                        Width: 100,
+                        Height: 100,
+                        Text: "100",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 1580,
+                        Width: 100,
+                        Height: 100,
+                        Text: "80",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 1776,
+                        Width: 100,
+                        Height: 100,
+                        Text: "60",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 2030,
+                        Top: 1974,
+                        Width: 100,
+                        Height: 100,
+                        Text: "40",
+                        TextFontSize: 9,
+                    },
+                    {
+                        Left: 30,
+                        Top: 2210,
+                        Width: 100,
+                        Height: 140,
+                        Text: "疼 痛强 度",
+                        MultiLine: true,
+                        ShowBorder: false,
+                        BackColorValue: "",
+                        TextColorValue: "",
+                        Alignment: "Center",
+                        LineAlignment: null,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        TextFontBold: false,
+                        TextFontItalic: false,
+                        TextFontUnderline: false,
+                    },
+                    {
+                        Left: 900,
+                        Top: 120,
+                        Width: 350,
+                        Height: 160,
+                        Text: "体温单",
+                        Alignment: "Center",
+                        LineAlignment: "Center",
+                        TextFontName: "宋体",
+                        TextFontSize: 24,
+                        TextFontBold: false,
+                        TextFontItalic: false,
+                        TextFontUnderline: false,
+                    },
+                    {
+                        "Left": 2056,
+                        "Top": 2500,
+                        "Width": 200,
+                        "Height": 100,
+                        "Text": "脉搏",
+                        TextFontSize: 9,
+                        SymbolVisible: true,//新增图标显隐
+                        SymbolStyle: "SolidCicle",//新增图标样式
+                        SymbolColorValue: null,//新增图标颜色
+                        SymbolSize: 5,//新增图标大小
+                        SymbolPosition: "left",//新增图标位置
+                    }
+                    ,
+                    {
+                        "Left": 2056,
+                        "Top": 2566,
+                        "Width": 200,
+                        "Height": 100,
+                        "Text": "体温",
+                        TextFontSize: 9,
+                        SymbolVisible: true,//新增图标显隐
+                        SymbolStyle: "Cross",//新增图标样式
+                        SymbolColorValue: "blue",//新增图标颜色
+                        SymbolSize: 5,//新增图标大小
+                        SymbolPosition: "left",//新增图标位置
+                    }
+                    ,
+                    {
+                        "Left": 2056,
+                        "Top": 2634,
+                        "Width": 200,
+                        "Height": 100,
+                        "Text": "心率",
+                        TextFontSize: 9,
+                        SymbolVisible: true,//新增图标显隐
+                        SymbolStyle: "HollowCicle",//新增图标样式
+                        SymbolColorValue: "red",//新增图标颜色
+                        SymbolSize: 5,//新增图标大小
+                        SymbolPosition: "left",//新增图标位置
+                    },
+                    {
+                        "Left": 2056,
+                        "Top": 2698,
+                        "Width": 200,
+                        "Height": 100,
+                        "Text": "疼痛",
+                        TextFontSize: 9,
+                        SymbolVisible: true,//新增图标显隐
+                        SymbolStyle: "SolidTriangle",//新增图标样式
+                        SymbolColorValue: "red",//新增图标颜色
+                        SymbolSize: 5,//新增图标大小
+                        SymbolPosition: "left",//新增图标位置
+                    }
+                ],
+                FooterLines: [
+                    {
+                        Name: "huxi",
+                        Title: "呼吸次数",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: 1,
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        AutoHeight: false,
+                        SpecifyHeight: 80,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "ShowByTick",
+                        TitleAlign: "near",
+
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                    },
+                    {
+                        Name: "zhuyuantianshu",
+                        Title: "住院天数",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "入院",
+                        LayoutType: "Normal",
+                        TickStep: 1,
+                        ValueType: "GlobalDayIndex",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        TitleFontBold: false,
+                        FontSize: "0",
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "dabian",
+                        Title: "大便次数",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "ruliang",
+                        Title: "摄入液量",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "chuliang",
+                        Title: "排出液量",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "tizhong",
+                        Title: "体重",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                        TextAlign: "center"
+                    },
+                    {
+                        Name: "xueya",
+                        Title: "血压",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: 6,
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "shuhou",
+                        Title: "术后天数",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "手术",
+                        LayoutType: "Normal",
+                        TickStep: 1,
+                        ValueType: "DayIndex",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        TitleFontBold: false,
+                        FontSize: "0",
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "shengao",
+                        Title: "身高",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "footerLine1",
+                        Title: "",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "footerLine1",
+                        Title: "",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "footerLine1",
+                        Title: "",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                    {
+                        Name: "footerLine1",
+                        Title: "",
+                        TitleColorValue: "#000000",
+                        StartDateKeyword: "",
+                        LayoutType: "Normal",
+                        TickStep: "6",
+                        ValueType: "TickText",
+                        TickLineVisible: true,
+                        SpecifyHeight: 0,
+                        AutoHeight: false,
+                        AfterOperaDaysFromZero: true,
+                        AfterOperaDaysBeginOne: false,
+                        TextFontName: "宋体",
+                        TextFontSize: 9,
+                        LoopTextList: null,
+                        UpAndDownTextType: "None",
+                        TitleAlign: "near",
+                        SpecifyTitleWidth: 0,
+                        PreserveStartKeywordOrder: false,
+                        PageTitleTexts: null,
+                        BlankDateWhenNoData: false,
+                        EndDateKeyword: "",
+                        TextColorValue: "",
+                        ExtendGridLineType: "Below",
+                        FontSize: 9,
+                        FontBold: "false",
+                        TitleFontBold: false,
+                    },
+                ],
+                YAxisInfos: [
+                    {
+                        Name: "tiwen",
+                        AllowOutofRange: true,
+                        MaxValue: 42,
+                        MinValue: 34,
+                        MinValueVisible: false, //在标尺中，展示最小的刻度值
+                        MaxValueVisible: true, //在标尺中，展示最大刻度值
+                        FahrenheitVisible: true, //当体温为摄氏度时，是否显示华氏度刻度表，默认false
+                        //修正最大最小值的垂直位置，解决最大值和最小值由于防止超出边界而被挤压的情况.默认true修正。当设置为false时，最大值和最小值会以自身位置居中，可能会超出边界。
+                        CorrectTheVerticalOfTickTextMaxMin: false,//是否需要纠正最大值和最小值的位置，默认纠正（为了不让刻度超出边界）
+                        SymbolColorValue: "#0000FF",
+                        SymbolStyle: "Cross",
+                        Title: "",
+                        YSplitNum: 8,
+                        EnableLanternValue: false,
+                        SymbolSize: 20,
+                        TitleColorValue: null,
+                        ShadowName: null,
+                        CharSymbol: "R",
+                        CharLantern: "R",
+                        TitleVisible: false,
+                        ShowLegendInRule: false,
+                        BottomTitle: "",
+                        RedLineValue: 37,
+                        VerticalLine: false,
+                        ShadowPointVisible: true,
+                        HollowCovertTargetName: null,
+                        AllowInterrupt: true,
+                        LanternValueColorForUpValue: "#0000FF",
+                        LanternValueColorForDownValue: "#FF0000",
+                        TopPadding: 0.1,
+                        BottomPadding: 0.1,
+                        MergeIntoLeft: false,
+                        SpecifyTitleWidth: 0,
+                        AlertLineColorValue: "#FF0000",
+                        LineStyleForLanternValue: "Dash",
+                        ValueTextBackColorValue: null,
+                        ShowPointValue: false,
+                        Visible: true,
+                        BorderVisible: true,
+                        ShadowStyle: "LeftSlant",
+                        TickTextAlignment: null,
+                        FontSize: null,
+                        FontBold: false,
+                        ColorValueForPointValue: "#000000",
+                        ColorValueForDownValue: "#FF0000",
+                        ColorValueForUpValue: "#FF0000",
+                        Index: 0,
+                    },
+                    {
+                        Name: "maibo",
+                        AllowOutofRange: true,
+                        MaxValue: 180,
+                        MinValue: 20,
+                        CorrectTheVerticalOfTickTextMaxMin: false,
+                        SymbolColorValue: "#FF0000",
+                        SymbolStyle: "SolidCicle",
+                        Title: "脉搏",
+                        YSplitNum: 8,
+                        EnableLanternValue: false,
+                        SymbolSize: 20,
+                        ShadowName: "xinlv",
+                        CharSymbol: "R",
+                        CharLantern: "R",
+                        TitleVisible: false,
+                        ShowLegendInRule: true,
+                        ShowInRule: false,//新增：是否将当前Y轴展示在左侧标尺中
+                        BottomTitle: "",
+                        RedLineValue: null,
+                        VerticalLine: false,
+                        ShadowPointVisible: true,
+                        HollowCovertTargetName: null,
+                        AllowInterrupt: true,
+                        LanternValueColorForUpValue: "#0000FF",
+                        LanternValueColorForDownValue: "#FF0000",
+                        TopPadding: 0.1,
+                        BottomPadding: 0.1,
+                        MergeIntoLeft: false,
+                        SpecifyTitleWidth: 0,
+                        AlertLineColorValue: "#FF0000",
+                        LineStyleForLanternValue: "Dash",
+                        ValueTextBackColorValue: null,
+                        ShowPointValue: false,
+                        Visible: true,
+                        BorderVisible: true,
+                        ShadowStyle: "LeftSlant",
+                        TickTextAlignment: null,
+                        FontSize: null,
+                        FontBold: false,
+                        ColorValueForPointValue: "#000000",
+                        ColorValueForDownValue: "#FF0000",
+                        ColorValueForUpValue: "#FF0000",
+                        Index: 0,
+                    },
+                    {
+                        Name: "xinlv",
+                        AllowOutofRange: true,
+                        MaxValue: 180,
+                        MinValue: 20,
+                        CorrectTheVerticalOfTickTextMaxMin: false,
+                        SymbolColorValue: "#FF0000",
+                        SymbolStyle: "HollowCicle",
+                        Title: "心率",
+                        YSplitNum: 8,
+                        EnableLanternValue: false,
+                        SymbolSize: 20,
+                        ShadowName: "",
+                        CharSymbol: "R",
+                        CharLantern: "R",
+                        TitleVisible: false,
+                        ShowLegendInRule: true,
+                        BottomTitle: "",
+                        RedLineValue: null,
+                        VerticalLine: false,
+                        ShadowPointVisible: true,
+                        HollowCovertTargetName: null,
+                        AllowInterrupt: true,
+                        LanternValueColorForUpValue: "#0000FF",
+                        LanternValueColorForDownValue: "#FF0000",
+                        TopPadding: 0.1,
+                        BottomPadding: 0.1,
+                        MergeIntoLeft: false,
+                        SpecifyTitleWidth: 0,
+                        AlertLineColorValue: "#FF0000",
+                        LineStyleForLanternValue: "Dash",
+                        ValueTextBackColorValue: null,
+                        ShowPointValue: false,
+                        Visible: true,
+                        BorderVisible: true,
+                        ShadowStyle: "LeftSlant",
+                        TickTextAlignment: null,
+                        FontSize: null,
+                        FontBold: false,
+                        ColorValueForPointValue: "#000000",
+                        ColorValueForDownValue: "#FF0000",
+                        ColorValueForUpValue: "#FF0000",
+                        Index: 0,
+                    },
+                    {
+                        AllowOutofRange: false,
+                        MaxValue: 100,
+                        MinValue: 0,
+                        Name: "wenben",
+                        Style: "Text",
+                        SymbolColorValue: null,
+                        SymbolStyle: "SolidCicle",
+                        Title: "文本",
+                        YSplitNum: "7",
+                        EnableLanternValue: false,
+                        SymbolSize: 20,
+                        TitleColorValue: null,
+                        ShadowName: null,
+                        CharSymbol: "R",
+                        CharLantern: "R",
+                        TitleVisible: "false",
+                        ShowLegendInRule: true,
+                        BottomTitle: "",
+                        RedLineValue: -10000,
+                        VerticalLine: false,
+                        ShadowPointVisible: true,
+                        HollowCovertTargetName: null,
+                        AllowInterrupt: true,
+                        LanternValueColorForUpValue: "#0000FF",
+                        LanternValueColorForDownValue: "#FF0000",
+                        TopPadding: 0.1,
+                        BottomPadding: 0.1,
+                        MergeIntoLeft: false,
+                        SpecifyTitleWidth: 0,
+                        AlertLineColorValue: "#FF0000",
+                        LineStyleForLanternValue: "Dash",
+                        ValueTextBackColorValue: null,
+                        ShowPointValue: false,
+                        Visible: true,
+                        BorderVisible: true,
+                        ShadowStyle: "LeftSlant",
+                        TickTextAlignment: null,
+
+                        FontSize: 9,
+                        FontBold: "false",
+                        ColorValueForPointValue: "#000000",
+                        ColorValueForDownValue: "#FF0000",
+                        ColorValueForUpValue: "#FF0000",
+                        Index: 2,
+                    },
+                    {
+                        AllowOutofRange: false,
+                        MaxValue: 10,
+                        MinValue: 0,
+                        Name: "tengtong",
+                        Style: "Value",
+                        SymbolColorValue: "#FF0000",
+                        SymbolStyle: "SolidTriangle",
+                        Title: "",
+                        FontSize: 9,
+                        YSplitNum: 5,
+                        EnableLanternValue: true,
+                        SymbolSize: 20,
+                        TitleColorValue: null,
+                        ShadowName: null,
+                        CharSymbol: "R",
+                        CharLantern: "R",
+                        TitleVisible: true,
+                        ShowLegendInRule: false,
+                        BottomTitle: "",
+                        RedLineValue: -10000,
+                        VerticalLine: false,
+                        ShadowPointVisible: true,
+                        HollowCovertTargetName: null,
+                        AllowInterrupt: true,
+                        LanternValueColorForUpValue: "#0000FF",
+                        LanternValueColorForDownValue: "#FF0000",
+                        TopPadding: 0.9,
+                        BottomPadding: -10000,
+                        MergeIntoLeft: true,
+                        SpecifyTitleWidth: 0,
+                        AlertLineColorValue: "#FF0000",
+                        LineStyleForLanternValue: "Dash",
+                        ValueTextBackColorValue: null,
+                        ShowPointValue: false,
+                        Visible: true,
+                        BorderVisible: true,
+                        ShadowStyle: "LeftSlant",
+                        TickTextAlignment: "Far",
+                        RightPadding: 5, //右边距,右对齐时，刻度距离右边框的距离，TickTextAlignment=Far时有效
+                        LeftPadding: 0, //左边距,左对齐时，刻度距离左边框的距离，TickTextAlignment=Near时有效
+                        //修正最大最小值的垂直位置，解决最大值和最小值由于防止超出边界而被挤压的情况.默认true修正。当设置为false时，最大值和最小值会以自身位置居中，可能会超出边界。
+                        CorrectTheVerticalOfTickTextMaxMin: false,
+                    },
+                ],
+            },
+            Parameters: [],
+            Values: [
+                {
+                    Name: "maibo",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 06:00:00",
+                            Value: 178,
+                        },
+                        {
+                            Time: "2016-06-24 14:00:00",
+                            Value: 160,
+                        },
+
+                        {
+                            Time: "2016-06-30 06:00:00",
+                            Value: 178,
+                        },
+                        {
+                            Time: "2016-06-30 14:00:00",
+                            Value: 160,
+                        },
+
+                    ],
+                },
+                {
+                    Name: "xinlv",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 06:00:00",
+                            Value: 100,
+                        },
+                        {
+                            Time: "2016-06-24 14:00:00",
+                            Value: 80,
+                        },
+
+                        {
+                            Time: "2016-06-30 06:00:00",
+                            Value: 80,
+                        },
+                        {
+                            Time: "2016-06-30 14:00:00",
+                            Value: 86,
+                        },
+                    ],
+
+                },
+
+                {
+                    Name: "xueya",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 06:00:00",
+                            Value: '135/74',
+                        },
+                        {
+                            Time: "2016-06-24 14:00:00",
+                            Value: '135/75',
+                        },
+
+                    ],
+
+                },
+                {
+                    Name: "tizhong",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 06:00:00",
+                            Value: '135',
+                        },
+                        {
+                            Time: "2016-06-24 14:00:00",
+                            Value: '135',
+                        },
+
+                    ],
+
+                },
+                {
+                    Name: "huxi",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 06:00:00",
+                            Value: 18,
+                            TextAlign: "Center"
+                        },
+                        {
+                            Time: "2016-06-23 10:00:00",
+                            Value: 18,
+                            TextAlign: "Center"
+                        },
+                        {
+                            Time: "2016-06-23 14:00:00",
+                            Value: 20,
+                        },
+
+
+
+                    ],
+
+                },
+                {
+                    Name: "tiwen",
+                    Datas: [
+                        {
+                            Time: "2016-06-23 09:00:00",
+                            Value: 35,
+                        },
+                        {
+                            Time: "2016-06-24 12:00:00",
+                            Value: 36,
+                        },
+                    ],
+                },
+                {
+                    Name: "tengtong",
+                    Datas: [
+                        {
+                            LanternValue: 2,
+                            Time: "2016-06-23 09:00:00",
+                            Value: 5,
+                            CharSymbol: "HollowTriangle",
+                            CharLantern: "◎",
+                        },
+                        {
+                            Time: "2016-06-24 09:00:00",
+                            Value: 4,
+                        },
+                        {
+                            Time: "2016-06-25 09:00:00",
+                            Value: 3,
+                        },
+                        {
+                            LanternValue: 2,
+                            Time: "2016-06-25 09:00:00",
+                            Value: -10000,
+                        },
+                        {
+                            LanternValue: 8,
+                            Time: "2016-06-28 09:00:00",
+                            Value: 6,
+                            CharSymbol: "R",
+                            CharLantern: "R",
+                            LanternTitleText: null,
+                            TextFontSize: 9,
+                            TextFontName: null,
+                        },
+                    ],
+                },
+            ],
+        };
+
+        //创建空白页面
+        function blankPage() {
+            ctl.TemperatureFileNew();
+        }
+
+        //打开本地文件
+        function file() {
+            ctl.LoadTemperatureDocumentFromFile();
+        }
+        //保存
+        function save() {
+            var a = ctl.SaveTemperatureDocumentToString();
+            console.log(a);
+        }
+        //下载
+        function download() {
+            ctl.SaveTemperatureDocumentToFile();
+        }
+        //打印
+        function print1() {
+            ctl.PrintTemperatureDocument();
+        }
+        //获取pdf
+        function getpdf() {
+            ctl.SaveTemperatureDocumentToPDF(function (base64) {
+                downloadPDF(base64);
+            });
+            function downloadPDF(base64) {
+                const link = document.createElement("a");
+                link.href = base64;
+                link.download = "downloaded.pdf";
+                link.click();
+                link.remove();
+            }
+        }
+
+        //获取全局属性
+        function GetDocumentConfigProperties() {
+            var config = ctl.GetDocumentConfigProperties();
+            console.log(config);
+        }
+
+        //眉栏
+        function GetHeaderLabelProperties() {
+            var config = ctl.GetHeaderLabelProperties();
+            console.log(config);
+        }
+
+        //一般项目
+        function GetGeneralItemProperties() {
+            var config = ctl.GetGeneralItemProperties();
+            console.log(config);
+        }
+
+        //体征项目
+        function GetYAxisInfosProperties() {
+            var config = ctl.GetYAxisInfosProperties();
+            console.log(config);
+        }
+        //特殊项目
+        function GetSpecialItemsProperties() {
+            var config = ctl.GetSpecialItemsProperties();
+            console.log(config);
+        }
+
+        //设计器模式
+        function DesignerMode(type) {
+            ctl.DesignerMode(type);
+        }
+
+        //修改眉栏
+        function SetHeaderLabelProperties() {
+            var config = ctl.GetHeaderLabelProperties();
+            var option = {
+                "SeperatorChar": "_",
+                "Value": "测试用户",
+            };
+            ctl.SetHeaderLabelProperties(config[0].UID, option); //根据UID进行修改
+        }
+
+        //修改一般项目
+        function SetGeneralItemProperties() {
+            // //需要在设计器模式下修改
+            DesignerMode(true);
+            var config = ctl.GetGeneralItemProperties();
+            var option = {
+                "Title": "测试",
+                "TitleColorValue": "#FF0000"
+            };
+            ctl.SetGeneralItemProperties(config[0].UID, option); //根据UID进行修改
+            // //关闭设计器
+            DesignerMode(false);
+
+        }
+
+
+        //修改体征项目
+        function SetYAxisInfosProperties() {
+            DesignerMode(true);
+            var config = ctl.GetYAxisInfosProperties();
+            var option = {
+                "TitleColorValue": "#FF0000",
+                "MaxValue": 9,
+                "MinValue": 1,
+            };
+            ctl.SetYAxisInfosProperties(config[0].UID, option);
+            DesignerMode(false);
+        }
+
+
+        //修改特殊项目属性
+        function SetSpecialItemsProperties() {
+            DesignerMode(true);
+            var config = ctl.GetSpecialItemsProperties();
+            var option = {
+                Title: "1111111",
+                TitleColorValue: "#FF0000"
+            };
+            ctl.SetSpecialItemsProperties(config[0].UID, option);
+            DesignerMode(false);
+        }
+
+        //修改疼痛强度
+        function SetTengtongValue() {
+            ctl.SetYAxisInfosValue('tengtong', [
+                {
+                    "Time": "2016-06-23 09:00:00",
+                    "Value": 5,
+                },
+                {
+                    "Time": "2016-06-24 09:00:00",
+                    "Value": 6
+                },
+                {
+                    "Time": "2016-06-25 09:00:00",
+                    "Value": 9
+                },
+
+                {
+
+                    "Time": "2016-06-26 09:00:00",
+                    "Value": 9,
+
+                },
+                {
+
+                    "Time": "2016-06-26 16:00:00",
+                    "Value": 6,
+
+                },
+                {
+                    "Time": "2016-06-28 09:00:00",
+                    "Value": 6,
+
+                }
+            ]); //也可以根据Name进行修改
+
+        }
+
+        //修改特殊项目值
+        function SetSpecialItemsValue() {
+            var data = [
+                {
+                    "Time": "2016-06-23 10:00:00",
+                    "Value": 1
+                }, {
+                    "Time": "2016-06-24 10:00:00",
+                    "Value": 1
+                }, {
+                    "Time": "2016-06-25 10:00:00",
+                    "Value": "没有"
+                }, {
+                    "Time": "2016-06-26 10:00:00",
+                    "Value": 1
+                },
+                {
+                    "Time": "2016-06-27 10:00:00",
+                    "Value": 2
+                },
+            ];
+            ctl.SetSpecialItemsValue('dabian', data);
+        }
+
+
+        //体温描点
+        function SetYAxisInfosValueTiwen() {
+            var data = [
+                {
+                    "Time": "2016-06-23 10:00:00",
+                    "Value": 36
+                },
+                {
+                    "Time": "2016-06-23 14:00:00",
+                    "Value": 38
+                }, {
+                    "Time": "2016-06-24 10:00:00",
+                    "Value": 35
+                }, {
+                    "Time": "2016-06-25 10:00:00",
+                    "Value": 38
+                }, {
+                    "Time": "2016-06-26 10:00:00",
+                    "Value": 37
+                },
+                {
+                    "Time": "2016-06-27 10:00:00",
+                    "Value": 38
+                }, {
+                    "Time": "2016-06-28 10:00:00",
+                    "Value": 36
+                }, {
+                    "Time": "2016-06-29 10:00:00",
+                    "Value": 39
+                }, {
+                    "Time": "2016-06-30 10:00:00",
+                    "Value": 37
+                }, {
+                    "Time": "2016-07-01 10:00:00",
+                    "Value": 40
+                }, {
+                    "Time": "2016-07-02 10:00:00",
+                    "Value": 39
+                }, {
+                    "Time": "2016-07-03 10:00:00",
+                    "Value": 36
+                }, {
+                    "Time": "2016-07-04 10:00:00",
+                    "Value": 40
+                },
+            ];
+            ctl.SetYAxisInfosValue('tiwen', data);
+        }
+
+
+        //脉搏描点
+        function SetYAxisInfosValueMaibo() {
+            var data = [
+                {
+                    "Time": "2016-06-23 10:00:00",
+                    "Value": 100
+                },
+                {
+                    "Time": "2016-06-23 14:00:00",
+                    "Value": 90
+                }, {
+                    "Time": "2016-06-24 10:00:00",
+                    "Value": 120
+                }, {
+                    "Time": "2016-06-25 10:00:00",
+                    "Value": 160
+                }, {
+                    "Time": "2016-06-26 10:00:00",
+                    "Value": 140
+                },
+                {
+                    "Time": "2016-06-27 10:00:00",
+                    "Value": 130
+                }, {
+                    "Time": "2016-06-28 10:00:00",
+                    "Value": 150
+                }, {
+                    "Time": "2016-06-29 10:00:00",
+                    "Value": 170
+                }, {
+                    "Time": "2016-06-30 10:00:00",
+                    "Value": 80
+                }, {
+                    "Time": "2016-07-01 10:00:00",
+                    "Value": 100
+                }, {
+                    "Time": "2016-07-02 10:00:00",
+                    "Value": 170
+                }, {
+                    "Time": "2016-07-03 10:00:00",
+                    "Value": 180
+                }, {
+                    "Time": "2016-07-04 10:00:00",
+                    "Value": 90
+                },
+            ];
+            ctl.SetYAxisInfosValue('maibo', data);
+        }
+
+        //心率描点
+        function SetYAxisInfosValueXinlv() {
+            var data = [
+                {
+                    "Time": "2016-06-23 10:00:00",
+                    "Value": 80
+                },
+                {
+                    "Time": "2016-06-23 14:00:00",
+                    "Value": 140
+                }, {
+                    "Time": "2016-06-24 10:00:00",
+                    "Value": 140
+                }, {
+                    "Time": "2016-06-25 10:00:00",
+                    "Value": 150
+                }, {
+                    "Time": "2016-06-26 10:00:00",
+                    "Value": 90
+                },
+                {
+                    "Time": "2016-06-27 10:00:00",
+                    "Value": 110
+                }, {
+                    "Time": "2016-06-28 10:00:00",
+                    "Value": 120
+                }, {
+                    "Time": "2016-06-29 10:00:00",
+                    "Value": 100
+                }, {
+                    "Time": "2016-06-30 10:00:00",
+                    "Value": 90
+                }, {
+                    "Time": "2016-07-01 10:00:00",
+                    "Value": 170
+                }, {
+                    "Time": "2016-07-02 10:00:00",
+                    "Value": 120
+                }, {
+                    "Time": "2016-07-03 10:00:00",
+                    "Value": 100
+                }, {
+                    "Time": "2016-07-04 10:00:00",
+                    "Value": 60
+                },
+            ];
+            ctl.SetYAxisInfosValue('xinlv', data);
+        }
+
+        //呼吸赋值
+        function SetSpecialItemsValueHuxi() {
+            ctl.SetSpecialItemsValue('huxi', [
+                {
+                    "Time": "2016-06-23 02:00:00",
+                    "Value": "R",
+                    "TextFontName": "Times New Roman",
+                    "TextFontSize": 12,
+                },
+                {
+                    "Time": "2016-06-23 06:00:00",
+                    "Value": "R",
+                    "TextFontName": "Times New Roman",
+                    "TextFontSize": 12,//呼吸R使用12号字体体验较好
+                },
+                {
+                    "Time": "2016-06-23 10:00:00",
+                    "Value": 20
+                },
+                {
+                    "Time": "2016-06-23 14:00:00",
+                    "Value": 13
+                },
+                {
+                    "Time": "2016-06-23 18:00:00",
+                    "Value": 21
+                },
+                {
+                    "Time": "2016-06-23 22:00:00",
+                    "Value": 16
+                },
+                {
+                    "Time": "2016-06-24 02:00:00",
+                    "Value": 12
+                },
+                {
+                    "Time": "2016-06-24 06:00:00",
+                    "Value": 18
+                },
+                {
+                    "Time": "2016-06-24 10:00:00",
+                    "Value": 20
+                },
+                {
+                    "Time": "2016-06-24 14:00:00",
+                    "Value": 13
+                },
+                {
+                    "Time": "2016-06-24 18:00:00",
+                    "Value": 21
+                },
+                {
+                    "Time": "2016-06-24 22:00:00",
+                    "Value": 16
+                },
+                {
+                    "Time": "2016-06-25 02:00:00",
+                    "Value": 12
+                },
+                {
+                    "Time": "2016-06-25 06:00:00",
+                    "Value": 18
+                },
+                {
+                    "Time": "2016-06-25 10:00:00",
+                    "Value": 20
+                },
+                {
+                    "Time": "2016-06-25 14:00:00",
+                    "Value": 13
+                },
+                {
+                    "Time": "2016-06-25 18:00:00",
+                    "Value": 21
+                },
+                {
+                    "Time": "2016-06-25 22:00:00",
+                    "Value": 16
+                },
+            ]);
+        }
+
+        //其他特殊项目赋值
+
+
+
+    </script>
+</body>
+
+</html>

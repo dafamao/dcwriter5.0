@@ -206,7 +206,7 @@ const count2 = ref(0);
 const count3 = ref(0);
 const count4 = ref(0);
 const defaultValues = {
-  count1: 1014,
+  count1: 1017,
   count2: 260,
   count3: 107,
   count4: 43,

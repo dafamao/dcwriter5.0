@@ -46,6 +46,7 @@
       /> -->
     </div>
     <div class="dc-hearder-right">
+      <div class="dc_header_right_Item" @click="returnHome">{{ t("ReturnHome") }}</div>
       <div
         class="dc_header_right_Item"
         onclick="window.open('https://ydydc.yuque.com/org-wiki-ydydc-te6liv/dzx9gm?# 《DCWriter五代编辑器接口手册》')"
@@ -55,7 +56,7 @@
       <!-- <div class="dc_header_right_Item" onclick="window.open('/demo')">
         {{ t("onlineDemo") }}
       </div> -->
-      <el-dropdown class="dc_header_right_Item">
+      <el-dropdown class="dc_header_right_Item" >
         <span class="el-dropdown-link">
           {{ t("onlineDemo") }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
         </span>
@@ -67,11 +68,21 @@
             <el-dropdown-item
               divided
               onclick="window.open('http://www.dcwriter.cn:5057/')"
-              >{{ $t("Demo_Complete") }}</el-dropdown-item>
+              >{{ $t("Demo_Complete") }} 
+              <span style="line-height: 10px;margin-left: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="#e70000" d="M3.616 19q-.691 0-1.153-.462T2 17.384V6.616q0-.691.463-1.153T3.616 5h16.769q.69 0 1.153.463T22 6.616v10.769q0 .69-.462 1.153T20.385 19zm0-1h16.769q.269 0 .442-.173t.173-.442V6.615q0-.269-.173-.442T20.385 6H3.615q-.269 0-.442.173T3 6.616v10.769q0 .269.173.442t.443.173m.269-3.308h.827v-4l2.704 4h.853V9.308h-.827v4l-2.654-4h-.904zm5.923 0h3.384v-.827h-2.5v-1.407h2.5v-.827h-2.5v-1.497h2.5v-.826H9.808zm5.615 0h4q.31 0 .501-.191q.192-.191.192-.501V9.308h-.827v4.5h-1.447v-3.5h-.826v3.5h-1.458v-4.5h-.827V14q0 .31.191.501t.501.191M3 18V6z"/></svg>
+              </span>
+              
+            </el-dropdown-item>
             <el-dropdown-item
               divided
-              onclick="window.open('/demoHtml/Temperature.html')">
-              {{ $t("Demo_Temperature") }}
+              onclick="window.open('/demoHtml/TemperatureA.html')">
+              {{ $t("Demo_TemperatureA") }}
+            </el-dropdown-item>
+            <el-dropdown-item
+              divided
+              onclick="window.open('/demoHtml/TemperatureB.html')">
+              {{ $t("Demo_TemperatureB") }}
             </el-dropdown-item>
             <el-dropdown-item
               divided
@@ -113,7 +124,7 @@
       </el-dropdown>
       <div class="dc_header_right_Item" @click="goCustomer">{{ t("technicalSupport") }}</div>
       <div class="dc_header_right_Item" @click="goCustomer">{{ t("downloadPurchase") }}</div>
-      <div class="dc_header_right_Item" onclick="window.open('https://www.dcwriter.cn:8765/')">{{ t("OldDemo") }}</div>
+      <div class="dc_header_right_Item" onclick="window.open('http://www.dcwriter.cn:6001/')">{{ t("OldDemo") }}</div>
       <div class="dc_header_right_Item" @click="emits('changeIndexFun',2,12)">{{ t("UpdateLog") }}</div>
       <el-dropdown class="dc_header_right_Language">
         <span class="el-dropdown-link">
@@ -479,6 +490,7 @@ const goCustomer = () => {
 .dc-logo {
   height: 60px;
   margin-right: 8px;
+  cursor: pointer;
 }
 .dc-company {
   font-size: 16px;

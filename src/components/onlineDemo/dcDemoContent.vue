@@ -3,7 +3,7 @@
     <div class="dc-demo-writer-control">
       <div id="myWriterControl" dctype="WriterControlForWASM" style="height: 100%" RuleVisible="false" AllowDrop="true"
         AllowDragContent="true" RuleBackColor="rgb(155, 187, 227)" PageCssString="box-shadow:0px 0px 0px grey"
-        RegisterCode="05F7A35CE21D66665A042D8CBFFCA39138CD04B98A8B318F61DF321B5140ADAEF4662D11C1EE06684A38AE3D15642DB8ECCDCA47A693192D05468BD0B38373846A1E5A6F2EDE9218DB2AE3170A3CE2AB4727CABE5AF35955C429AA62CDAD1EB7828722A8767CA3C2D4C3F764C6CEF77347"
+        RegisterCode="0566987B1B6CD6DECCBEE8CE4CDEAD577FCF5A30201BE7553AFD47C841548F0C0CA6212C10F259E9AF13820AF8E4A17CCBF7612FFFF1A779EBF962627BCAF7ECB906FA8C96694D242208ED9CECD19A907F6820C142920C54553B32B4FE661F78E553F9D3CCE077B455FA558F71D78FE816"
         autoCreateControl="false" DocumentOptions.ViewOptions.ShowParagraphFlag="false"
         DocumentOptions.ViewOptions.ShowInputFieldStateTag="false" DocumentOptions.ViewOptions.ShowFormButton="true"
         pagetitleposition="BottomRight">
@@ -125,7 +125,7 @@ const changeKeyDownAndKeyUpToStore = () => {
 };
 
 // 初始化控件
-const scriptUrls = ["https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js", "./_framework/jquery.js"];
+const scriptUrls = ["https://www.dcwriter.cn:8006/res/dcwriter5service?wasmres=dcwriter5.js", "https://www.dcwriter.cn:8099/Jquery/jquery-1.7.2.min.js"];
 
 const scriptPromises = scriptUrls.map((url) => {
   return new Promise((resolve, reject) => {
